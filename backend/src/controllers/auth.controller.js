@@ -85,7 +85,7 @@ async function loginUser(req, res) {
         id: user._id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "3600" },
+      { expiresIn: "1h" },
     );
 
     res.status(200).json({
