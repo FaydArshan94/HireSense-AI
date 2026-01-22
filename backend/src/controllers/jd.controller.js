@@ -19,7 +19,7 @@ async function uploadJD(req, res) {
       return res.status(404).json({ error: "Resume not found." });
     }
 
-    if (resume.userId.toString() !== req.user._id) {
+    if (resume.userId.toString() !== req.user.id) {
       return res
         .status(403)
         .json({ error: "Unauthorized to use this resume." });

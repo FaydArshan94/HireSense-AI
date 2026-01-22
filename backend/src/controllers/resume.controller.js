@@ -47,4 +47,6 @@ async function uploadResume(req, res) {
     return res.status(500).json({ error: "Failed to upload resume." });
   }
 }
+
+
 module.exports = { uploadResume };
