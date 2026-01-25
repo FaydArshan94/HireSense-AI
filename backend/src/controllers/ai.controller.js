@@ -6,6 +6,8 @@ const analysisModel = require("../models/ai.model");
 const mongoose = require("mongoose");
 
 async function analyzeResume(req, res) {
+  const dailyLimit = 3;
+
   try {
     const { jdId } = req.body;
 
@@ -39,6 +41,19 @@ async function analyzeResume(req, res) {
       return res.status(404).json({ error: "Resume not found." });
     }
 
+    const startofDay = new Date();
+    startofDay.setHours(0, 0, 0, 0);
+
+    const todayAnalysisCount = await analysisModel.countDocuments({
+      userId: req.user._id,
+      createdAt: { $gte: startofDay },
+    });
+    if (todayAnalysisCount >= dailyLimit) {
+      return res
+        .status(429)
+        .json({ error: "Daily analysis limit reached. Try again tomorrow." });
+    }
+
     const aiRawResponse = await analyzeResumeWithGemini(
       resume.rawText,
       jd.jdText,
@@ -69,6 +84,7 @@ async function analyzeResume(req, res) {
     return res.status(200).json({
       analysisId: analysis._id,
       analysis: analysisResult,
+      remaining: dailyLimit - todayAnalysisCount - 1,
     });
   } catch (error) {
     console.error("AI Analysis Error:", error);
@@ -112,7 +128,5 @@ async function getAnalysisHistory(req, res) {
     return res.status(500).json({ error: "Failed to fetch analysis history" });
   }
 }
-
-
 
 module.exports = { analyzeResume, getAnalysisById, getAnalysisHistory };
