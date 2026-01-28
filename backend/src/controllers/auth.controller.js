@@ -58,7 +58,9 @@ async function loginUser(req, res) {
 
   try {
     if (!email && !username) {
-      return res.status(400).json({ message: "Either email or username is required." });
+      return res
+        .status(400)
+        .json({ message: "Either email or username is required." });
     }
 
     const user = await userModel.findOne({ $or: [{ email }, { username }] });
@@ -85,16 +87,24 @@ async function loginUser(req, res) {
         id: user._id,
       },
       process.env.JWT_SECRET,
+
       { expiresIn: "1h" },
     );
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 60 * 60 * 1000,
+    });
+
     res.status(200).json({
       message: "Login successful.",
+      token,
       id: user._id,
       email: user.email,
       username: user.username,
       role: user.role,
-      token,
     });
   } catch (error) {
     console.log(error);
@@ -102,7 +112,15 @@ async function loginUser(req, res) {
   }
 }
 
+async function getAuth(req, res) {
+  return res.status(200).json({
+    message: "Current user fetched successfully",
+    user: req.user,
+  });
+}
+
 module.exports = {
   registerUser,
   loginUser,
+  getAuth,
 };

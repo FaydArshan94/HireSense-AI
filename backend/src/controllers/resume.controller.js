@@ -33,7 +33,7 @@ async function uploadResume(req, res) {
 
     let cleanedText = data.text.replace(/\s+/g, " ").trim();
 
-    await resumeModel.create({
+    const resume = await resumeModel.create({
       userId: req.user._id,
       rawText: cleanedText,
       version: 1,
@@ -41,7 +41,7 @@ async function uploadResume(req, res) {
 
     return res
       .status(200)
-      .json({ message: "Resume uploaded successfully", text: cleanedText });
+      .json({ message: "Resume uploaded successfully", text: cleanedText, id: resume._id });
   } catch (error) {
     console.error("Error uploading resume:", error);
     return res.status(500).json({ error: "Failed to upload resume." });
