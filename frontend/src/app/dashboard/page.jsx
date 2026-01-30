@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,61 +9,95 @@ import { Upload, FileText, Brain } from "lucide-react";
 import { useUploadResume } from "../../features/resume/api/useUploadResume";
 import { useSaveJD } from "../../features/jd/useSaveJD";
 import { useAnalyzeResume } from "@/features/analysis/useAnalyzeResume";
+import FileUploadZone from "@/components/ui/FileUploadZone";
+import LoadingDots from "@/components/ui/LoadingDots";
+import MetricsDisplay from "@/components/ui/MetricsDisplay";
 
 export default function DashboardPage() {
-  const {
-    mutate: uploadResume,
-    isSuccess: resumeUploaded,
-    isLoading: resumeUploading,
-    data: resumeData,
-  } = useUploadResume();
+  const { mutate: uploadResume, isSuccess: resumeUploaded, isPending: resumeUploading, data: resumeData } =
+    useUploadResume();
 
-  const {
-    mutate: saveJD,
-    isSuccess: jdSaved,
-    isLoading: jdSaving,
-    data: jdData,
-  } = useSaveJD();
+  const { mutate: saveJD, isSuccess: jdSaved, isPending: jdSaving, data: jdData } =
+    useSaveJD();
 
-  const {
-    mutate: analyzeResume,
-    isSuccess: analysisDone,
-    isLoading: analyzing,
-    data: analysisData,
-  } = useAnalyzeResume();
+  const { mutate: analyzeResume, isPending: analyzing, data: analysisData } =
+    useAnalyzeResume();
 
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isDisabled, setIsDisabled] = useState(false);
   const [jdText, setJdText] = useState("");
 
-  const canAnalyze = resumeUploaded && jdSaved;
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
-
-  const handleUpload = () => {
-    if (selectedFile) {
-      uploadResume(selectedFile);
-      setIsDisabled(true);
-    }
-  };
+  const jdSectionRef = useRef(null);
+  const analyzeSectionRef = useRef(null);
+  const resultsRef = useRef(null);
 
   const resumeId = resumeData?.id;
-  
+  const canAnalyze = resumeUploaded && jdSaved;
 
-  
-  const handleChangeJD = (e) => {
-    setJdText(e.target.value);
+  // Animate job description section when resume is uploaded
+  useEffect(() => {
+    if (resumeUploaded && jdSectionRef.current) {
+      gsap.fromTo(
+        jdSectionRef.current,
+        { opacity: 0, y: 30, height: 0 },
+        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" }
+      );
+    }
+  }, [resumeUploaded]);
+
+  // Animate analyze section when JD is saved
+  useEffect(() => {
+    if (jdSaved && analyzeSectionRef.current) {
+      gsap.fromTo(
+        analyzeSectionRef.current,
+        { opacity: 0, y: 30, height: 0 },
+        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" }
+      );
+    }
+  }, [jdSaved]);
+
+  // Animate results section when analysis is complete and scroll to it
+  useEffect(() => {
+    if (analysisData && resultsRef.current) {
+      gsap.fromTo(
+        resultsRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          onComplete: () => {
+            // Smooth scroll to results after animation
+            resultsRef.current.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+              inline: "nearest"
+            });
+          }
+        }
+      );
+    }
+  }, [analysisData]);
+
+  const handleFileSelect = (file) => {
+    if (!resumeUploaded) {
+      setSelectedFile(file);
+      uploadResume(file);
+    }
   };
-  
+
+  const handleRemoveFile = () => {
+    if (!resumeUploaded) {
+      setSelectedFile(null);
+    }
+  };
 
   const handleSaveJD = () => {
-    const jobTitle = "Sample Job Title";
-    saveJD({ resumeId, jobTitle, jdText });
-    setJdText("");
+    saveJD({
+      resumeId,
+      jobTitle: "Job Role",
+      jdText,
+    });
   };
 
   const handleAnalyze = () => {
@@ -70,92 +105,145 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
-        <h1 className="text-3xl font-semibold">HireSense AI Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10" />
 
-        {/* Resume Upload */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <Upload />
-              <h2 className="text-xl text-zinc-100 font-medium">
-                Upload Resume
-              </h2>
+      <div className="max-w-4xl mx-auto space-y-8 mt-20">
+        {/* Header */}
+        <div className="text-center space-y-3">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground">
+            Resume <span className="text-primary">Analysis</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Upload your resume, add a job description, and get instant ATS insights powered by AI.
+          </p>
+        </div>
+
+        {/* STEP 1: Resume Upload */}
+        <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+          <CardContent className="p-8 space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-primary/10">
+                <Upload className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">Step 1: Upload Resume</h2>
+                <p className="text-sm text-muted-foreground">Upload your resume in PDF format</p>
+              </div>
             </div>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              disabled={isDisabled}
-              className={`block text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white ${isDisabled ? "opacity-50 cursor-not-allowed" : "hover:file:bg-gray-700"}`}
+
+            <FileUploadZone
+              onFileSelect={handleFileSelect}
+              selectedFile={selectedFile}
+              onRemove={handleRemoveFile}
+              disabled={resumeUploading || resumeUploaded}
             />
-            <Button
-              onClick={handleUpload}
-              disabled={isDisabled || !selectedFile || resumeUploading}
-            >
-              {resumeUploading ? "Uploading..." : "Upload PDF"}
-            </Button>
+
+            {resumeUploading && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                Uploading resume...
+              </div>
+            )}
+
             {resumeUploaded && (
-              <p className="text-green-400 text-sm">
+              <div className="flex items-center gap-2 text-sm text-green-500 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
                 Resume uploaded successfully
-              </p>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Job Description */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <FileText />
-              <h2 className="text-xl text-zinc-100 font-medium">
-                Job Description
-              </h2>
-            </div>
-            <Textarea
-              value={jdText}
-              onChange={handleChangeJD}
-              placeholder="Paste job description here..."
-            />
-            <Button
-              disabled={!resumeUploaded || jdSaving || jdText.trim() === ""}
-              onClick={handleSaveJD}
-            >
-              Save JD
-            </Button>
-            {jdSaved && (
-              <p className="text-green-400 text-sm">Job description saved</p>
-            )}
-          </CardContent>
-        </Card>
+        {/* STEP 2: Job Description (Only shows after resume upload) */}
+        {resumeUploaded && (
+          <div ref={jdSectionRef} style={{ opacity: 0 }}>
+            <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+              <CardContent className="p-8 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-lg bg-primary/10">
+                    <FileText className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground">Step 2: Job Description</h2>
+                    <p className="text-sm text-muted-foreground">Paste the job description you're applying for</p>
+                  </div>
+                </div>
 
-        {/* Analyze */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <Brain />
-              <h2 className="text-xl text-zinc-100 font-medium">
-                Analyze Resume
-              </h2>
-            </div>
-            <Button
-              disabled={!canAnalyze || analyzing || analysisDone}
-              onClick={handleAnalyze}
-              className="w-full"
-            >
-              {analyzing ? "Analyzing..." : "Analyze Resume"}
-            </Button>
-            {analysisDone && (
-              <p className="text-green-400 text-sm">Analysis complete</p>
-            )}
-            {!canAnalyze && (
-              <p className="text-gray-400 text-sm">
-                Upload resume and save job description to enable analysis
-              </p>
-            )}
-          </CardContent>
-        </Card>
+                <Textarea
+                  value={jdText}
+                  onChange={(e) => setJdText(e.target.value)}
+                  disabled={jdSaved}
+                  placeholder="Paste the complete job description here...
+
+Example:
+We are looking for a Senior Software Engineer with 5+ years of experience in React, Node.js, and cloud technologies..."
+                  className="min-h-[200px] resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+
+                <Button
+                  disabled={jdText.trim() === "" || jdSaving || jdSaved}
+                  onClick={handleSaveJD}
+                  className="w-full sm:w-auto px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
+                >
+                  {jdSaving ? "Saving..." : jdSaved ? "✓ Saved" : "Continue to Analysis"}
+                </Button>
+
+                {jdSaved && (
+                  <div className="flex items-center gap-2 text-sm text-green-500 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="w-2 h-2 bg-green-500 rounded-full" />
+                    Job description saved
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* STEP 3: Analyze (Only shows after JD is saved) */}
+        {canAnalyze && (
+          <div ref={analyzeSectionRef} style={{ opacity: 0 }}>
+            <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+              <CardContent className="p-8 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-lg bg-primary/10">
+                    <Brain className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground">Step 3: AI Analysis</h2>
+                    <p className="text-sm text-muted-foreground">Get instant ATS compatibility insights</p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleAnalyze}
+                  disabled={analyzing || analysisData}
+                  className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
+                >
+                  {analyzing ? "Analyzing..." : analysisData ? "✓ Analysis Complete" : "🚀 Analyze Resume"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Loading Animation */}
+        {analyzing && (
+          <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+            <CardContent className="p-8">
+              <LoadingDots />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* ANALYSIS RESULTS */}
+        {analysisData && !analyzing && (
+          <div ref={resultsRef} style={{ opacity: 0 }}>
+            <MetricsDisplay analysisData={analysisData} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PropsWithChildren, useMemo, useEffect } from 'react';
 import api from '@/utils/axios/axios';
 import { useAuthStore } from '@/store/authStore';
+import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import LayoutProvider from '@/components/layout/LayoutProvider';
 
 export function Providers({ children }) {
   const queryClient = useMemo(
@@ -30,7 +32,7 @@ export function Providers({ children }) {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await api.get('/auth/me');        
+        const response = await api.get('/auth/me');
         if (response.data && response.data.user) {
           setUser(response.data.user);
         }
@@ -43,9 +45,13 @@ export function Providers({ children }) {
   }, [setUser]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <LayoutProvider>
+          {children}
+        </LayoutProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
