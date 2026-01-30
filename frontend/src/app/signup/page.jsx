@@ -26,18 +26,18 @@ export default function SignupPage() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!form.username.trim()) newErrors.username = "Username is required";
     if (form.username.length < 3) newErrors.username = "Username must be at least 3 characters";
-    
+
     if (!form.email.trim()) newErrors.email = "Email is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) newErrors.email = "Invalid email format";
-    
+
     if (!form.password) newErrors.password = "Password is required";
     if (form.password.length < 6) newErrors.password = "Password must be at least 6 characters";
-    
+
     if (form.password !== form.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -72,22 +72,22 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">Create your account</h2>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSignup}>
           {apiError && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">{apiError}</p>
+            <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
+              <p className="text-sm font-medium text-destructive">{apiError}</p>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="username" className="block text-sm font-medium text-foreground">
                 Username
               </label>
               <input
@@ -96,16 +96,15 @@ export default function SignupPage() {
                 type="text"
                 value={form.username}
                 onChange={handleChange}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  errors.username ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`mt-1 block w-full px-3 py-2 bg-background border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-foreground placeholder:text-muted-foreground ${errors.username ? "border-destructive" : "border-input"
+                  }`}
                 placeholder="Enter your username"
               />
-              {errors.username && <p className="mt-1 text-sm text-red-600">{errors.username}</p>}
+              {errors.username && <p className="mt-1 text-sm text-destructive">{errors.username}</p>}
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-foreground">
                 Email
               </label>
               <input
@@ -114,16 +113,15 @@ export default function SignupPage() {
                 type="email"
                 value={form.email}
                 onChange={handleChange}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  errors.email ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`mt-1 block w-full px-3 py-2 bg-background border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-foreground placeholder:text-muted-foreground ${errors.email ? "border-destructive" : "border-input"
+                  }`}
                 placeholder="Enter your email"
               />
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+              {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-foreground">
                 Password
               </label>
               <input
@@ -132,16 +130,15 @@ export default function SignupPage() {
                 type="password"
                 value={form.password}
                 onChange={handleChange}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  errors.password ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`mt-1 block w-full px-3 py-2 bg-background border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-foreground placeholder:text-muted-foreground ${errors.password ? "border-destructive" : "border-input"
+                  }`}
                 placeholder="Enter your password"
               />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+              {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password}</p>}
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground">
                 Confirm Password
               </label>
               <input
@@ -150,26 +147,25 @@ export default function SignupPage() {
                 type="password"
                 value={form.confirmPassword}
                 onChange={handleChange}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                  errors.confirmPassword ? "border-red-300" : "border-gray-300"
-                }`}
+                className={`mt-1 block w-full px-3 py-2 bg-background border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm text-foreground placeholder:text-muted-foreground ${errors.confirmPassword ? "border-destructive" : "border-input"
+                  }`}
                 placeholder="Confirm your password"
               />
-              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="mt-1 text-sm text-destructive">{errors.confirmPassword}</p>}
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/login" className="font-medium text-primary hover:text-primary/80 transition-colors">
               Sign in
             </Link>
           </p>

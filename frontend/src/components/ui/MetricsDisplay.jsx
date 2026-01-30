@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
-import { CheckCircle, XCircle, Lightbulb } from "lucide-react";
+import { CheckCircle, XCircle, Lightbulb, ArrowRight } from "lucide-react";
+import { Button } from "./button";
 
-export default function MetricsDisplay({ analysisData }) {
+export default function MetricsDisplay({ analysisData, analysisId }) {
     const containerRef = useRef(null);
     const scoreRef = useRef(null);
     const [displayScore, setDisplayScore] = useState(0);
+    const router = useRouter();
 
     const { matchScore, matchedSkills, missingSkills, suggestions } = analysisData.analysis;
 
@@ -166,6 +169,19 @@ export default function MetricsDisplay({ analysisData }) {
                     ))}
                 </ul>
             </div>
+
+            {/* View Full Analysis Button */}
+            {analysisId && (
+                <div className="flex justify-center pt-4">
+                    <Button
+                        onClick={() => router.push(`/dashboard/analysis/${analysisId}`)}
+                        className="px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group"
+                    >
+                        View Full Analysis
+                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

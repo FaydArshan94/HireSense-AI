@@ -100,12 +100,16 @@ async function getAnalysisById(req, res) {
       return res.status(400).json({ error: "Invalid analysis ID" });
     }
 
-    const analysis = await analysisModel.findById(id);
+    const analysis = await analysisModel
+      .findById(id)
+      .populate("jdId", "jobTitle jdText")
+      .populate("resumeId", "rawText");
+
     if (!analysis) {
       return res.status(404).json({ error: "Analysis not found" });
     }
 
-    if (analysis.userId.toString() !== req.user.id) {
+    if (analysis.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ error: "Unauthorized access" });
     }
 
@@ -119,10 +123,20 @@ async function getAnalysisById(req, res) {
 async function getAnalysisHistory(req, res) {
   try {
     const analyses = await analysisModel
-      .find({ userId: req.user.id })
-      .sort({ createdAt: -1 });
+      .find({ userId: req.user._id })
+      .populate("jdId", "jobTitle")
+      .sort({ createdAt: -1 })
+      .limit(10);
 
-    return res.status(200).json({ analyses });
+    // Format the response for dashboard display
+    const formattedAnalyses = analyses.map((analysis) => ({
+      _id: analysis._id,
+      jobTitle: analysis.jdId?.jobTitle || "Unknown Position",
+      matchScore: analysis.analysisResult?.matchScore || 0,
+      createdAt: analysis.createdAt,
+    }));
+
+    return res.status(200).json({ analyses: formattedAnalyses });
   } catch (error) {
     console.error("Analysis history error:", error);
     return res.status(500).json({ error: "Failed to fetch analysis history" });

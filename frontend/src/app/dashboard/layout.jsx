@@ -3,15 +3,15 @@ import { useAuthStore } from "../../store/authStore";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const layout = ({children}) => {
-  const { isAuthenticated,isAuthLoading } = useAuthStore();
+const layout = ({ children }) => {
+  const { isAuthenticated, isAuthLoading, user } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated && !isAuthLoading) {
+    if (!isAuthenticated && !user) {
       router.push("/login");
     }
-  }, [isAuthenticated, isAuthLoading, router]);
+  }, [isAuthenticated, user, router]);
 
   if (isAuthLoading) {
     return null; // or a loading spinner

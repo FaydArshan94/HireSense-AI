@@ -1,19 +1,24 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, FileText, Brain } from "lucide-react";
+import { Upload, FileText, Brain, Clock, TrendingUp } from "lucide-react";
 import { useUploadResume } from "../../features/resume/api/useUploadResume";
 import { useSaveJD } from "../../features/jd/useSaveJD";
 import { useAnalyzeResume } from "@/features/analysis/useAnalyzeResume";
+import { useGetAnalysisHistory } from "@/features/analysis/useGetAnalysisHistory";
 import FileUploadZone from "@/components/ui/FileUploadZone";
 import LoadingDots from "@/components/ui/LoadingDots";
 import MetricsDisplay from "@/components/ui/MetricsDisplay";
+import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   const { mutate: uploadResume, isSuccess: resumeUploaded, isPending: resumeUploading, data: resumeData } =
     useUploadResume();
 
@@ -23,8 +28,11 @@ export default function DashboardPage() {
   const { mutate: analyzeResume, isPending: analyzing, data: analysisData } =
     useAnalyzeResume();
 
+  const { data: analysisHistory, isLoading: historyLoading } = useGetAnalysisHistory();
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [jdText, setJdText] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
 
   const jdSectionRef = useRef(null);
   const analyzeSectionRef = useRef(null);
@@ -95,13 +103,19 @@ export default function DashboardPage() {
   const handleSaveJD = () => {
     saveJD({
       resumeId,
-      jobTitle: "Job Role",
+      jobTitle,
       jdText,
     });
   };
 
   const handleAnalyze = () => {
     analyzeResume({ jdId: jdData?.jdId });
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 80) return "text-green-500";
+    if (score >= 60) return "text-yellow-500";
+    return "text-red-500";
   };
 
   return (
@@ -120,6 +134,58 @@ export default function DashboardPage() {
             Upload your resume, add a job description, and get instant ATS insights powered by AI.
           </p>
         </div>
+
+        {/* Recent Analyses Section */}
+        {analysisHistory && analysisHistory.length > 0 && (
+          <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Clock className="w-5 h-5 text-primary" />
+                </div>
+                <h2 className="text-xl font-semibold text-foreground">Recent Analyses</h2>
+              </div>
+
+              <div className="space-y-3">
+                {analysisHistory.slice(0, 5).map((analysis) => (
+                  <div
+                    key={analysis._id}
+                    className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-all group cursor-pointer"
+                    onClick={() => router.push(`/dashboard/analysis/${analysis._id}`)}
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <TrendingUp className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="flex-1">
+                        <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
+                          {analysis.jobTitle}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(analysis.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-2xl font-bold ${getScoreColor(analysis.matchScore)}`}>
+                        {analysis.matchScore}%
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        View
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* STEP 1: Resume Upload */}
         <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
@@ -176,10 +242,15 @@ export default function DashboardPage() {
                   value={jdText}
                   onChange={(e) => setJdText(e.target.value)}
                   disabled={jdSaved}
-                  placeholder="Paste the complete job description here...
+                  placeholder="Paste the complete job description here... Example: We are looking for a Senior Software Engineer with 5+ years of experience in React, Node.js, and cloud technologies..."
+                  className="min-h-[200px] resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                />
 
-Example:
-We are looking for a Senior Software Engineer with 5+ years of experience in React, Node.js, and cloud technologies..."
+                <Input
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  disabled={jdSaved}
+                  placeholder="Enter Job Title"
                   className="min-h-[200px] resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 />
 
@@ -241,7 +312,7 @@ We are looking for a Senior Software Engineer with 5+ years of experience in Rea
         {/* ANALYSIS RESULTS */}
         {analysisData && !analyzing && (
           <div ref={resultsRef} style={{ opacity: 0 }}>
-            <MetricsDisplay analysisData={analysisData} />
+            <MetricsDisplay analysisData={analysisData} analysisId={analysisData.analysisId} />
           </div>
         )}
       </div>
