@@ -2,21 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Brain, Menu, X } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user } = useAuthStore()
-
+  const [mounted, setMounted] = useState(false);
+  
+  // Fixed: Changed isloading to isAuthLoading
+  const { user, isAuthLoading,isAuthenticated } = useAuthStore();
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -31,21 +33,26 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? "bg-white/80 dark:bg-black/80 backdrop-blur-lg  shadow-sm"
-        : "bg-transparent"
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/80 dark:bg-black/80 backdrop-blur-lg shadow-sm"
+          : "bg-transparent"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
-              <span className="text-primary-foreground font-bold text-lg">H</span>
+            <div
+              className="p-2 rounded-lg"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--primary), var(--accent))",
+              }}
+            >
+              <Brain className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-semibold text-foreground hidden sm:block">
-              HireSense
-            </span>
+            <span className="text-xl font-bold">HireSense AI</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -65,32 +72,38 @@ export default function Navbar() {
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
-
-            {user ? (
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
-              >
-                Dashboard
-              </Link>
+            {mounted && !isAuthLoading ? (
+              <>
+                {user ? (
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <Link
+                      href="/login"
+                      className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="text-sm font-medium bg-primary text-primary-foreground px-6 py-2.5 rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
+                    >
+                      Create My Resume
+                    </Link>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex items-center gap-4">
-                <Link
-                  href="/login"
-                  className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="text-sm font-medium bg-primary text-primary-foreground px-6 py-2.5 rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
-                >
-                  Create My Resume
-                </Link>
+                <div className="w-20 h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+                <div className="w-32 h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
               </div>
             )}
-
-
           </div>
 
           {/* Mobile Menu Button */}
@@ -106,8 +119,9 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? "max-h-96 border-b border-border" : "max-h-0"
-          } bg-white/95 dark:bg-black/95 backdrop-blur-lg`}
+        className={`lg:hidden overflow-hidden transition-all duration-300 ${
+          isMobileMenuOpen ? "max-h-96 border-b border-border" : "max-h-0"
+        } bg-white/95 dark:bg-black/95 backdrop-blur-lg`}
       >
         <div className="px-4 py-6 space-y-4">
           {navLinks.map((link) => (
@@ -120,26 +134,45 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+
+          {/* Mobile Auth Section */}
           <div className="pt-4 space-y-3 border-t border-border">
             {/* Theme Toggle for Mobile */}
-            <div className="flex justify-center pb-2">
-              <ThemeToggle />
-            </div>
-
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-center text-sm font-medium text-foreground hover:bg-accent px-4 py-2.5 rounded-lg transition-colors"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/signup"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
-            >
-              Create My Resume
-            </Link>
+            {mounted && !isAuthLoading ? (
+              <>
+                {user ? (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
+                  >
+                    Go to Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block text-center text-sm font-medium text-foreground hover:bg-accent px-4 py-2.5 rounded-lg transition-colors"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
+                    >
+                      Create My Resume
+                    </Link>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="space-y-2">
+                <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+                <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+              </div>
+            )}
           </div>
         </div>
       </div>

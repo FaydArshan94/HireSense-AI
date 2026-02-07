@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 export default function LayoutProvider({ children }) {
@@ -9,6 +10,7 @@ export default function LayoutProvider({ children }) {
             <main className="min-h-screen bg-background overflow-hidden">
                 {children}
             </main>
+            <Footer />
         </>
     );
 }
