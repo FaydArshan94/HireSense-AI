@@ -20,15 +20,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes("/auth/me")
+    ) {
       const { clearUser } = useAuthStore.getState();
-      if (
-        error.response?.status === 401 &&
-        !window.location.pathname.includes("/login")
-      ) {
-        clearUser();
-        window.location.href = "/login";
-      }
+      clearUser();
     }
 
     return Promise.reject(error);
