@@ -137,30 +137,33 @@ export default function Navbar() {
           <div className="pt-4 space-y-3 border-t border-border">
             {/* Theme Toggle for Mobile */}
 
-            {user ? (
-              <Link
-                href="/dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
-              >
-                Go to Dashboard
-              </Link>
+            {isAuthLoading ? (
+              <div className="w-20 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
             ) : (
               <>
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center text-sm font-medium text-foreground hover:bg-accent px-4 py-2.5 rounded-lg transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
-                >
-                  Create My Resume
-                </Link>
+                {user ? (
+                  <Link
+                    href="/dashboard"
+                    className="text-sm font-medium bg-accent rounded-lg text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <Link
+                      href="/login"
+                      className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="text-sm font-medium bg-primary text-primary-foreground px-6 py-2.5 rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
+                    >
+                      Create My Resume
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </div>

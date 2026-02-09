@@ -15,20 +15,33 @@ import FileUploadZone from "@/components/ui/FileUploadZone";
 import LoadingDots from "@/components/ui/LoadingDots";
 import MetricsDisplay from "@/components/ui/MetricsDisplay";
 import { Input } from "@/components/ui/input";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function DashboardPage() {
   const router = useRouter();
 
-  const { mutate: uploadResume, isSuccess: resumeUploaded, isPending: resumeUploading, data: resumeData } =
-    useUploadResume();
+  const {
+    mutate: uploadResume,
+    isSuccess: resumeUploaded,
+    isPending: resumeUploading,
+    data: resumeData,
+  } = useUploadResume();
 
-  const { mutate: saveJD, isSuccess: jdSaved, isPending: jdSaving, data: jdData } =
-    useSaveJD();
+  const {
+    mutate: saveJD,
+    isSuccess: jdSaved,
+    isPending: jdSaving,
+    data: jdData,
+  } = useSaveJD();
 
-  const { mutate: analyzeResume, isPending: analyzing, data: analysisData } =
-    useAnalyzeResume();
+  const {
+    mutate: analyzeResume,
+    isPending: analyzing,
+    data: analysisData,
+  } = useAnalyzeResume();
 
-  const { data: analysisHistory, isLoading: historyLoading } = useGetAnalysisHistory();
+  const { data: analysisHistory, isLoading: historyLoading } =
+    useGetAnalysisHistory();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [jdText, setJdText] = useState("");
@@ -47,7 +60,7 @@ export default function DashboardPage() {
       gsap.fromTo(
         jdSectionRef.current,
         { opacity: 0, y: 30, height: 0 },
-        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" }
+        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" },
       );
     }
   }, [resumeUploaded]);
@@ -58,7 +71,7 @@ export default function DashboardPage() {
       gsap.fromTo(
         analyzeSectionRef.current,
         { opacity: 0, y: 30, height: 0 },
-        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" }
+        { opacity: 1, y: 0, height: "auto", duration: 0.6, ease: "power3.out" },
       );
     }
   }, [jdSaved]);
@@ -79,10 +92,10 @@ export default function DashboardPage() {
             resultsRef.current.scrollIntoView({
               behavior: "smooth",
               block: "start",
-              inline: "nearest"
+              inline: "nearest",
             });
-          }
-        }
+          },
+        },
       );
     }
   }, [analysisData]);
@@ -90,8 +103,23 @@ export default function DashboardPage() {
   const handleFileSelect = (file) => {
     if (!resumeUploaded) {
       setSelectedFile(file);
-      uploadResume(file);
+      handleUpload(file);
     }
+  };
+
+  const handleUpload = (file) => {
+    uploadResume(file, {
+      onSuccess: () => {
+        toast.success("Resume uploaded successfully");
+      },
+      onError: (error) => {
+        const message =
+          error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Upload failed. Try again.";
+        toast.error(message);
+      },
+    });
   };
 
   const handleRemoveFile = () => {
@@ -120,6 +148,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
+
+
+    <Toaster/>
+
       {/* Decorative Background Elements */}
       <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10" />
@@ -131,7 +163,8 @@ export default function DashboardPage() {
             Resume <span className="text-primary">Analysis</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload your resume, add a job description, and get instant ATS insights powered by AI.
+            Upload your resume, add a job description, and get instant ATS
+            insights powered by AI.
           </p>
         </div>
 
@@ -143,7 +176,9 @@ export default function DashboardPage() {
                 <div className="p-2.5 rounded-lg bg-primary/10">
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-semibold text-foreground">Recent Analyses</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Recent Analyses
+                </h2>
               </div>
 
               <div className="space-y-3">
@@ -151,7 +186,9 @@ export default function DashboardPage() {
                   <div
                     key={analysis._id}
                     className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-all group cursor-pointer"
-                    onClick={() => router.push(`/dashboard/analysis/${analysis._id}`)}
+                    onClick={() =>
+                      router.push(`/dashboard/analysis/${analysis._id}`)
+                    }
                   >
                     <div className="flex items-center gap-3 flex-1">
                       <TrendingUp className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -160,16 +197,21 @@ export default function DashboardPage() {
                           {analysis.jobTitle}
                         </h3>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(analysis.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })}
+                          {new Date(analysis.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`text-2xl font-bold ${getScoreColor(analysis.matchScore)}`}>
+                      <span
+                        className={`text-2xl font-bold ${getScoreColor(analysis.matchScore)}`}
+                      >
                         {analysis.matchScore}%
                       </span>
                       <Button
@@ -195,8 +237,12 @@ export default function DashboardPage() {
                 <Upload className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Step 1: Upload Resume</h2>
-                <p className="text-sm text-muted-foreground">Upload your resume in PDF format</p>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Step 1: Upload Resume
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Upload your resume in PDF format
+                </p>
               </div>
             </div>
 
@@ -233,8 +279,12 @@ export default function DashboardPage() {
                     <FileText className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-foreground">Step 2: Job Description</h2>
-                    <p className="text-sm text-muted-foreground">Paste the job description you're applying for</p>
+                    <h2 className="text-xl font-semibold text-foreground">
+                      Step 2: Job Description
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Paste the job description you're applying for
+                    </p>
                   </div>
                 </div>
 
@@ -259,7 +309,11 @@ export default function DashboardPage() {
                   onClick={handleSaveJD}
                   className="w-full sm:w-auto px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
                 >
-                  {jdSaving ? "Saving..." : jdSaved ? "✓ Saved" : "Continue to Analysis"}
+                  {jdSaving
+                    ? "Saving..."
+                    : jdSaved
+                      ? "✓ Saved"
+                      : "Continue to Analysis"}
                 </Button>
 
                 {jdSaved && (
@@ -283,8 +337,12 @@ export default function DashboardPage() {
                     <Brain className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-foreground">Step 3: AI Analysis</h2>
-                    <p className="text-sm text-muted-foreground">Get instant ATS compatibility insights</p>
+                    <h2 className="text-xl font-semibold text-foreground">
+                      Step 3: AI Analysis
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Get instant ATS compatibility insights
+                    </p>
                   </div>
                 </div>
 
@@ -293,7 +351,11 @@ export default function DashboardPage() {
                   disabled={analyzing || analysisData}
                   className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
                 >
-                  {analyzing ? "Analyzing..." : analysisData ? "✓ Analysis Complete" : "🚀 Analyze Resume"}
+                  {analyzing
+                    ? "Analyzing..."
+                    : analysisData
+                      ? "✓ Analysis Complete"
+                      : "🚀 Analyze Resume"}
                 </Button>
               </CardContent>
             </Card>
@@ -312,7 +374,10 @@ export default function DashboardPage() {
         {/* ANALYSIS RESULTS */}
         {analysisData && !analyzing && (
           <div ref={resultsRef} style={{ opacity: 0 }}>
-            <MetricsDisplay analysisData={analysisData} analysisId={analysisData.analysisId} />
+            <MetricsDisplay
+              analysisData={analysisData}
+              analysisId={analysisData.analysisId}
+            />
           </div>
         )}
       </div>
