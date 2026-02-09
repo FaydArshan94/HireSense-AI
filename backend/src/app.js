@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(cors({ origin: "https://hire-sense-ai-theta.vercel.app/", credentials: true, methods: ["GET", "POST", "PUT", "DELETE"] }));
+app.use(cors({ origin: "https://hire-sense-ai-theta.vercel.app", credentials: true, methods: ["GET", "POST", "PUT", "DELETE"] }));
 
 
 app.use("/api/auth", authRoutes);
