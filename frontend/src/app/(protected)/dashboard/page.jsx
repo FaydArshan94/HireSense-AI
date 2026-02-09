@@ -16,6 +16,7 @@ import LoadingDots from "@/components/ui/LoadingDots";
 import MetricsDisplay from "@/components/ui/MetricsDisplay";
 import { Input } from "@/components/ui/input";
 import toast, { Toaster } from "react-hot-toast";
+import { useAnalysisUsage } from "../../../features/analysis/useAnalysisUsage";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -34,11 +35,18 @@ export default function DashboardPage() {
     data: jdData,
   } = useSaveJD();
 
+  const [limitInfo, setLimitInfo] = useState(null);
+
   const {
     mutate: analyzeResume,
     isPending: analyzing,
     data: analysisData,
-  } = useAnalyzeResume();
+  } = useAnalyzeResume({
+    onLimit: (data) => setLimitInfo(data),
+    onSuccess: (data) => setLimitInfo(data.usage),
+  });
+
+  const { data: usage, isLoading } = useAnalysisUsage();
 
   const { data: analysisHistory, isLoading: historyLoading } =
     useGetAnalysisHistory();
@@ -148,9 +156,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
-
-
-    <Toaster/>
+      <Toaster />
 
       {/* Decorative Background Elements */}
       <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
@@ -231,6 +237,11 @@ export default function DashboardPage() {
 
         {/* STEP 1: Resume Upload */}
         <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
+          {usage?.remaining === 0 && (
+            <div className="mt-3 text-sm text-red-500">
+              Daily analysis limit reached. Uploads will unlock tomorrow.
+            </div>
+          )}
           <CardContent className="p-8 space-y-6">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-lg bg-primary/10">
@@ -250,7 +261,9 @@ export default function DashboardPage() {
               onFileSelect={handleFileSelect}
               selectedFile={selectedFile}
               onRemove={handleRemoveFile}
-              disabled={resumeUploading || resumeUploaded}
+              disabled={
+                resumeUploading || resumeUploaded || usage?.remaining === 0
+              }
             />
 
             {resumeUploading && (
@@ -291,7 +304,7 @@ export default function DashboardPage() {
                 <Textarea
                   value={jdText}
                   onChange={(e) => setJdText(e.target.value)}
-                  disabled={jdSaved}
+                  disabled={jdSaved || usage?.remaining === 0}
                   placeholder="Paste the complete job description here... Example: We are looking for a Senior Software Engineer with 5+ years of experience in React, Node.js, and cloud technologies..."
                   className="min-h-50 resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 />

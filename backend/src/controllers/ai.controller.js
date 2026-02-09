@@ -49,9 +49,17 @@ async function analyzeResume(req, res) {
       createdAt: { $gte: startofDay },
     });
     if (todayAnalysisCount >= dailyLimit) {
-      return res
-        .status(429)
-        .json({ error: "Daily analysis limit reached. Try again tomorrow." });
+      const resetAt = new Date();
+      resetAt.setHours(24, 0, 0, 0); // next midnight
+
+      return res.status(429).json({
+        error: "DAILY_LIMIT_REACHED",
+        message: "You have reached your daily analysis limit.",
+        limit: dailyLimit,
+        used: todayAnalysisCount,
+        remaining: 0,
+        resetAt: resetAt.toISOString(),
+      });
     }
 
     const aiRawResponse = await analyzeResumeWithGemini(
@@ -84,7 +92,11 @@ async function analyzeResume(req, res) {
     return res.status(200).json({
       analysisId: analysis._id,
       analysis: analysisResult,
-      remaining: dailyLimit - todayAnalysisCount - 1,
+      usage: {
+        limit: dailyLimit,
+        used: todayAnalysisCount + 1,
+        remaining: dailyLimit - todayAnalysisCount - 1,
+      },
     });
   } catch (error) {
     console.error("AI Analysis Error:", error);
@@ -128,7 +140,6 @@ async function getAnalysisHistory(req, res) {
       .sort({ createdAt: -1 })
       .limit(10);
 
-    // Format the response for dashboard display
     const formattedAnalyses = analyses.map((analysis) => ({
       _id: analysis._id,
       jobTitle: analysis.jdId?.jobTitle || "Unknown Position",
@@ -143,4 +154,28 @@ async function getAnalysisHistory(req, res) {
   }
 }
 
-module.exports = { analyzeResume, getAnalysisById, getAnalysisHistory };
+
+async function getAnalysisUsage(req,res){
+  try {
+    const startofDay = new Date();
+    startofDay.setHours(0, 0, 0, 0);
+
+    const dailyLimit = 3;
+
+    const todayAnalysisCount = await analysisModel.countDocuments({
+      userId: req.user._id,
+      createdAt: { $gte: startofDay },
+    });
+
+    return res.status(200).json({
+      limit: dailyLimit,
+      used: todayAnalysisCount,
+      remaining: Math.max(dailyLimit - todayAnalysisCount, 0),
+    });
+  } catch (error) {
+    console.error("Get analysis usage error:", error);
+    return res.status(500).json({ error: "Failed to fetch analysis usage" });
+  }
+}
+
+module.exports = { analyzeResume, getAnalysisById, getAnalysisHistory, getAnalysisUsage };
