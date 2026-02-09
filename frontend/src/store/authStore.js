@@ -18,5 +18,6 @@ export const useAuthStore = create((set) => ({
       isAuthLoading: false,
     }),
 
-  clearUser: () => set({ user: null, isAuthLoading: false }),
+  clearUser: () =>
+    set({ user: null, isAuthLoading: false, isAuthenticated: false }),
 }));

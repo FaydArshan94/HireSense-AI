@@ -16,7 +16,7 @@ export default function AnalysisDetailPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 px-4 sm:px-6 py-10">
+            <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10">
                 <div className="max-w-4xl mx-auto mt-20">
                     <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
                         <CardContent className="p-8">
@@ -30,7 +30,7 @@ export default function AnalysisDetailPage() {
 
     if (error || !analysis) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 px-4 sm:px-6 py-10">
+            <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10">
                 <div className="max-w-4xl mx-auto mt-20 text-center space-y-4">
                     <h1 className="text-3xl font-bold text-foreground">Analysis Not Found</h1>
                     <p className="text-muted-foreground">The analysis you're looking for doesn't exist or you don't have access to it.</p>
@@ -59,7 +59,7 @@ export default function AnalysisDetailPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
             {/* Decorative Background Elements */}
             <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
             <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10" />
@@ -136,7 +136,7 @@ export default function AnalysisDetailPage() {
                                 </div>
                                 <div className="h-4 bg-muted rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-gradient-to-r ${getProgressGradient(matchScore)} rounded-full transition-all duration-1000`}
+                                        className={`h-full bg-linear-to-r ${getProgressGradient(matchScore)} rounded-full transition-all duration-1000`}
                                         style={{ width: `${matchScore}%` }}
                                     />
                                 </div>
@@ -206,7 +206,7 @@ export default function AnalysisDetailPage() {
                                     key={index}
                                     className="flex items-start gap-3 text-muted-foreground"
                                 >
-                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center mt-0.5">
+                                    <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center mt-0.5">
                                         {index + 1}
                                     </span>
                                     <span className="text-sm leading-relaxed">{suggestion}</span>

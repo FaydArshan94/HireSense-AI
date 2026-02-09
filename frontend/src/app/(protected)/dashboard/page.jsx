@@ -7,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, FileText, Brain, Clock, TrendingUp } from "lucide-react";
-import { useUploadResume } from "../../features/resume/api/useUploadResume";
-import { useSaveJD } from "../../features/jd/useSaveJD";
+import { useUploadResume } from "../../../features/resume/api/useUploadResume";
+import { useSaveJD } from "../../../features/jd/useSaveJD";
 import { useAnalyzeResume } from "@/features/analysis/useAnalyzeResume";
 import { useGetAnalysisHistory } from "@/features/analysis/useGetAnalysisHistory";
 import FileUploadZone from "@/components/ui/FileUploadZone";
@@ -293,7 +293,7 @@ export default function DashboardPage() {
                   onChange={(e) => setJdText(e.target.value)}
                   disabled={jdSaved}
                   placeholder="Paste the complete job description here... Example: We are looking for a Senior Software Engineer with 5+ years of experience in React, Node.js, and cloud technologies..."
-                  className="min-h-[200px] resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="min-h-50 resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 />
 
                 <Input
@@ -301,7 +301,7 @@ export default function DashboardPage() {
                   onChange={(e) => setJobTitle(e.target.value)}
                   disabled={jdSaved}
                   placeholder="Enter Job Title"
-                  className="min-h-[200px] resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="min-h-50 resize-none bg-background/50 border-border focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 />
 
                 <Button
@@ -349,7 +349,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleAnalyze}
                   disabled={analyzing || analysisData}
-                  className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
+                  className="w-full py-6 text-lg font-semibold bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
                 >
                   {analyzing
                     ? "Analyzing..."
