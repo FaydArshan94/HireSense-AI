@@ -1,5 +1,5 @@
 "use client";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../store/authStore";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Brain } from "lucide-react";
@@ -12,9 +12,9 @@ const layout = ({ children }) => {
     if (isAuthLoading) return;
 
     if (!isAuthenticated) {
-      router.push("/login");
+      router.replace("/login");
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, isAuthLoading]);
 
   if (isAuthLoading) {
     return (
