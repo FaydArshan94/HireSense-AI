@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { PropsWithChildren, useMemo, useEffect } from 'react';
-import api from '@/utils/axios/axios';
-import { useAuthStore } from '@/store/authStore';
-import { ThemeProvider } from '@/components/ui/ThemeProvider';
-import LayoutProvider from '@/components/layout/LayoutProvider';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { PropsWithChildren, useMemo, useEffect } from "react";
+import api from "@/utils/axios/axios";
+import { useAuthStore } from "@/store/authStore";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import LayoutProvider from "@/components/layout/LayoutProvider";
 
 export function Providers({ children }) {
   const queryClient = useMemo(
@@ -24,32 +24,34 @@ export function Providers({ children }) {
           },
         },
       }),
-    []
+    [],
   );
 
   const setUser = useAuthStore((state) => state.setUser);
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await api.get('/auth/me');
-        if (response.data && response.data.user) {
-          setUser(response.data.user);
+        const res = await api.get("/auth/me");
+        if (res.data?.user) {
+          setUser(res.data.user);
+        } else {
+          clearUser();
         }
       } catch (error) {
-        console.error('Failed to fetch current user:', error);
+        console.error("Failed to fetch current user:", error);
+        clearUser();
       }
     };
 
     fetchCurrentUser();
-  }, [setUser]);
+  }, []);
 
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <LayoutProvider>
-          {children}
-        </LayoutProvider>
+        <LayoutProvider>{children}</LayoutProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>

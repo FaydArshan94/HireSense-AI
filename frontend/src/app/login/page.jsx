@@ -20,10 +20,10 @@ export default function LoginPage() {
   const [apiError, setApiError] = useState("");
 
   useEffect(() => {
-    if (isAuthenticated && !isAuthLoading) {
+    if (!isAuthLoading && isAuthenticated) {
       router.replace("/dashboard");
     }
-  }, [isAuthenticated, isAuthLoading, router]);
+  }, [isAuthenticated, isAuthLoading]);
 
   const validateForm = () => {
     const newErrors = {};

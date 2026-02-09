@@ -10,9 +10,9 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
+
   // Fixed: Changed isloading to isAuthLoading
-  const { user, isAuthLoading,isAuthenticated } = useAuthStore();
+  const { user, isAuthLoading, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     setMounted(true);
@@ -72,7 +72,10 @@ export default function Navbar() {
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
-            {mounted && !isAuthLoading ? (
+
+            {isAuthLoading ? (
+              <div className="w-20 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+            ) : (
               <>
                 {user ? (
                   <Link
@@ -98,11 +101,6 @@ export default function Navbar() {
                   </div>
                 )}
               </>
-            ) : (
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
-                <div className="w-32 h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
-              </div>
             )}
           </div>
 
@@ -138,40 +136,32 @@ export default function Navbar() {
           {/* Mobile Auth Section */}
           <div className="pt-4 space-y-3 border-t border-border">
             {/* Theme Toggle for Mobile */}
-            {mounted && !isAuthLoading ? (
-              <>
-                {user ? (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
-                  >
-                    Go to Dashboard
-                  </Link>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-center text-sm font-medium text-foreground hover:bg-accent px-4 py-2.5 rounded-lg transition-colors"
-                    >
-                      Log In
-                    </Link>
-                    <Link
-                      href="/signup"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
-                    >
-                      Create My Resume
-                    </Link>
-                  </>
-                )}
-              </>
+
+            {user ? (
+              <Link
+                href="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
+              >
+                Go to Dashboard
+              </Link>
             ) : (
-              <div className="space-y-2">
-                <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
-                <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
-              </div>
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-center text-sm font-medium text-foreground hover:bg-accent px-4 py-2.5 rounded-lg transition-colors"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-center text-sm font-medium bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-all"
+                >
+                  Create My Resume
+                </Link>
+              </>
             )}
           </div>
         </div>
