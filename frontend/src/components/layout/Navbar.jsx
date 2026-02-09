@@ -9,13 +9,12 @@ import ThemeToggle from "../ui/ThemeToggle";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+
 
   // Fixed: Changed isloading to isAuthLoading
   const { user, isAuthLoading, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -144,6 +143,7 @@ export default function Navbar() {
                 {user ? (
                   <Link
                     href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="text-sm font-medium bg-accent rounded-lg text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
                   >
                     Dashboard
@@ -152,12 +152,14 @@ export default function Navbar() {
                   <div className="flex items-center gap-4">
                     <Link
                       href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
                     >
                       Log In
                     </Link>
                     <Link
                       href="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="text-sm font-medium bg-primary text-primary-foreground px-6 py-2.5 rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
                     >
                       Create My Resume
