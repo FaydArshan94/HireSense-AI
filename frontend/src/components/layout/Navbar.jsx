@@ -76,7 +76,7 @@ export default function Navbar() {
               <div className="w-20 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
             ) : (
               <>
-                {user ? (
+                {isAuthenticated ? (
                   <Link
                     href="/dashboard"
                     className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors px-4 py-2"
@@ -140,7 +140,7 @@ export default function Navbar() {
               <div className="w-20 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
             ) : (
               <>
-                {user && isAuthenticated ?  (
+                {isAuthenticated ?  (
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}

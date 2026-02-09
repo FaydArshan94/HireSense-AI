@@ -20,16 +20,21 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => res,
   (error) => {
+    const status = error.response?.status;
+    const url = error.config?.url;
+
     if (
-      error.response?.status === 401 &&
-      !error.config?.url?.includes("/auth/me")
+      status === 401 &&
+      !url?.includes("/auth/login") &&
+      !url?.includes("/auth/me")
     ) {
       const { clearUser } = useAuthStore.getState();
       clearUser();
     }
 
     return Promise.reject(error);
-  },
+  }
 );
+
 
 export default api;
