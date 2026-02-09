@@ -237,12 +237,12 @@ export default function DashboardPage() {
 
         {/* STEP 1: Resume Upload */}
         <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
-          {usage?.remaining === 0 && (
-            <div className="mt-3 text-sm text-red-500">
-              Daily analysis limit reached. Uploads will unlock tomorrow.
-            </div>
-          )}
           <CardContent className="p-8 space-y-6">
+            {usage?.remaining === 0 && (
+              <div className="mt-3 ml-4 text-sm text-red-500">
+                Daily analysis limit reached. Uploads will unlock tomorrow.
+              </div>
+            )}
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-lg bg-primary/10">
                 <Upload className="w-6 h-6 text-primary" />
