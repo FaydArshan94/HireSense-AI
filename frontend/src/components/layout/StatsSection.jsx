@@ -54,7 +54,7 @@ export default function StatsSection() {
   return (
     <section
       ref={statsRef}
-      className="py-12 lg:py-16 bg-muted/30 border-y border-border"
+      className="py-12 lg:py-16 bg-muted/30 border-y border-border hidden lg:block"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-center text-lg font-semibold text-foreground mb-8">

@@ -140,7 +140,7 @@ export default function Navbar() {
               <div className="w-20 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
             ) : (
               <>
-                {user ? (
+                {user && isAuthenticated ?  (
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
