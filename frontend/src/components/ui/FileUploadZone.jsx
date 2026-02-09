@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { Upload, X, FileText } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function FileUploadZone({ onFileSelect, selectedFile, onRemove, disabled = false }) {
     const [isDragging, setIsDragging] = useState(false);
@@ -41,6 +42,9 @@ export default function FileUploadZone({ onFileSelect, selectedFile, onRemove, d
     const handleFileInput = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             onFileSelect(e.target.files[0]);
+        }
+        if(e.target.files[0]?.size > 2 * 1024 * 1024) {
+            toast.error("Resume must be under 2MB.");
         }
     };
 
