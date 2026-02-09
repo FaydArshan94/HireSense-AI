@@ -110,7 +110,7 @@ export default function AnalysisDetailPage() {
 
                 <Button
                   onClick={() => router.push("/dashboard")}
-                  className="px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group w-full sm:w-auto"
+                  className="px-4 py-3  md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group w-full sm:w-auto"
                 >
                   <RefreshCw className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
                   <span className="truncate">Re-analyze with Improved Resume</span>
