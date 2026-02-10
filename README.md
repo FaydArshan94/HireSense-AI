@@ -114,8 +114,8 @@ Common reasons:
 
 If HireSense AI helped you land an interview, give it a ⭐️!
 
-**Found a bug?** [Open an issue](arshanw94@gmail.com)  
-**Have a feature idea?** [Start a discussion](arshanw94@gmail.com)
+**Found a bug?** (arshanw94@gmail.com)  
+
 
 ---
 
