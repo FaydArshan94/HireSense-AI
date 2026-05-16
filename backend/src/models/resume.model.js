@@ -15,6 +15,13 @@ const resumeSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  links: {
+    linkedin: { type: String, default: "" },
+    github: { type: String, default: "" },
+    portfolio: { type: String, default: "" },
+    projectLinks: { type: [String], default: [] },
+    certifications: { type: [String], default: [] },
+  }
 });
 
 const resumeModel = mongoose.model("Resume", resumeSchema);
