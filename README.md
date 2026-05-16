@@ -94,7 +94,7 @@ Common reasons:
 
 | ATS Score Dashboard | Resume Analysis | Keyword Recommendations |
 |:---:|:---:|:---:|
-| ![Dashboard](https://via.placeholder.com/350x200) | ![Analysis](https://via.placeholder.com/350x200) | ![Keywords](https://via.placeholder.com/350x200) |
+| ![Home](/Home.jpeg) | ![Analysis](/Dashboard.jpeg) | ![Keywords](/Analytics.jpeg) |
 
 ---
 
@@ -114,8 +114,8 @@ Common reasons:
 
 If HireSense AI helped you land an interview, give it a ⭐️!
 
-**Found a bug?** [Open an issue](https://github.com/yourusername/hiresense-ai/issues)  
-**Have a feature idea?** [Start a discussion](https://github.com/yourusername/hiresense-ai/discussions)
+**Found a bug?** (arshanw94@gmail.com)  
+
 
 ---
 
