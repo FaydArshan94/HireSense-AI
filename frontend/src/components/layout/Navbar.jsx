@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -136,7 +136,7 @@ export default function Navbar() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden p-2 rounded-lg transition-colors"
-            style={{ color: "#0f0f0f" }}
+            style={{ color: "var--(primary)" }}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -146,16 +146,11 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? "max-h-screen opacity-100 py-6" : "max-h-0 opacity-0"
+        className={`lg:hidden overflow-hidden transition-all duration-300 bg-foreground ${isMobileMenuOpen ? "max-h-screen opacity-100 py-4" : "max-h-0 opacity-0"
           }`}
-        style={{
-          background: "rgba(247, 244, 239, 0.95)",
-          backdropFilter: "blur(12px)",
-          borderColor: "#ede9e0",
-        }}
       >
-        <div className="px-4 py-6 space-y-4">
-          {navLinks.map((link) => (
+        <div className="px-4  space-y-4">
+          {/* {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
@@ -170,28 +165,35 @@ export default function Navbar() {
             >
               {link.name}
             </Link>
-          ))}
+          ))} */}
+
+
+
 
           {/* Mobile Auth Section */}
-          <div className="pt-4 space-y-3 border-t" style={{ borderColor: "#ede9e0" }}>
+          <div className="pt-2 space-y-2">
             {isAuthLoading ? (
               <div className="w-20 h-8 bg-gray-200 rounded-lg animate-pulse" />
             ) : (
               <>
                 {isAuthenticated ? (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 transition-colors"
-                    style={{
-                      fontFamily: "system-ui, sans-serif",
-                      fontSize: "1rem",
-                      fontWeight: 600,
-                      color: "#0f0f0f",
-                    }}
-                  >
-                    Dashboard
-                  </Link>
+                  <div className="flex items-center justify-between ">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-2 transition-colors"
+                      style={{
+                        fontFamily: "system-ui, sans-serif",
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        color: "var(--background)",
+
+                      }}
+                    >
+                      Dashboard
+                    </Link>
+                    <ThemeToggle onClick={() => setIsMobileMenuOpen(false)} />
+                  </div>
                 ) : (
                   <div className="flex flex-col gap-4 mt-2">
                     <Link

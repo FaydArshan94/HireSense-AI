@@ -156,7 +156,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20 px-4 sm:px-6 py-10 relative overflow-hidden">
-      <Toaster />
 
       {/* Decorative Background Elements */}
       <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
