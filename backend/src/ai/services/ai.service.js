@@ -11,10 +11,31 @@ const ai = new GoogleGenAI({
 
 });
 
+async function executeWithRetry(operation, maxRetries = 3, initialDelay = 1000) {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (error.status === 503 || error.status === 429) {
+        attempt++;
+        if (attempt >= maxRetries) {
+          throw error;
+        }
+        const delay = initialDelay * Math.pow(2, attempt - 1);
+        console.warn(`Gemini API busy (Status ${error.status}). Retrying in ${delay}ms... (Attempt ${attempt} of ${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
 async function analyzeResumeWithGemini(resumeText, jdText) {
   const prompt = buildResumeAnalysisPrompt(resumeText, jdText);
 
-  const response = await ai.models.generateContent({
+  const response = await executeWithRetry(() => ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: [
       {
@@ -22,7 +43,7 @@ async function analyzeResumeWithGemini(resumeText, jdText) {
         parts: [{ text: prompt }],
       },
     ],
-  });
+  }));
 
   const aiText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -36,7 +57,7 @@ async function analyzeResumeWithGemini(resumeText, jdText) {
 async function rewriteResumeWithGemini(resumeText, missingSkills, suggestions) {
   const prompt = buildResumeRewritePrompt(resumeText, missingSkills, suggestions);
 
-  const response = await ai.models.generateContent({
+  const response = await executeWithRetry(() => ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: [
       {
@@ -44,7 +65,7 @@ async function rewriteResumeWithGemini(resumeText, missingSkills, suggestions) {
         parts: [{ text: prompt }],
       },
     ],
-  });
+  }));
 
   const aiText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
 
