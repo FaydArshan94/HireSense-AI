@@ -17,7 +17,7 @@ async function executeWithRetry(operation, maxRetries = 3, initialDelay = 1000) 
     try {
       return await operation();
     } catch (error) {
-      if (error.status === 503 || error.status === 429) {
+      if (error.status === 503) {
         attempt++;
         if (attempt >= maxRetries) {
           throw error;
@@ -32,18 +32,37 @@ async function executeWithRetry(operation, maxRetries = 3, initialDelay = 1000) 
   }
 }
 
+async function callGeminiWithFallback(prompt) {
+  try {
+    return await executeWithRetry(() => ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    }));
+  } catch (error) {
+    if (error.status === 429) {
+      console.warn("Primary model 429. Falling back to gemini-1.5-flash...");
+      try {
+        return await executeWithRetry(() => ai.models.generateContent({
+          model: "gemini-1.5-flash",
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+        }));
+      } catch (fallbackError) {
+        if (fallbackError.status === 429) {
+          const limitError = new Error("Daily AI limit reached. Try again tomorrow or upgrade your plan.");
+          limitError.status = 429;
+          throw limitError;
+        }
+        throw fallbackError;
+      }
+    }
+    throw error;
+  }
+}
+
 async function analyzeResumeWithGemini(resumeText, jdText) {
   const prompt = buildResumeAnalysisPrompt(resumeText, jdText);
 
-  const response = await executeWithRetry(() => ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: prompt }],
-      },
-    ],
-  }));
+  const response = await callGeminiWithFallback(prompt);
 
   const aiText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -57,15 +76,7 @@ async function analyzeResumeWithGemini(resumeText, jdText) {
 async function rewriteResumeWithGemini(resumeText, missingSkills, suggestions) {
   const prompt = buildResumeRewritePrompt(resumeText, missingSkills, suggestions);
 
-  const response = await executeWithRetry(() => ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: prompt }],
-      },
-    ],
-  }));
+  const response = await callGeminiWithFallback(prompt);
 
   const aiText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
 

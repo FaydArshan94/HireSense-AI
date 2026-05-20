@@ -100,6 +100,9 @@ async function analyzeResume(req, res) {
     });
   } catch (error) {
     console.error("AI Analysis Error:", error);
+    if (error.status === 429) {
+      return res.status(429).json({ error: error.message });
+    }
     return res.status(500).json({ error: "AI analysis failed" });
   }
 }

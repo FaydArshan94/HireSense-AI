@@ -66,6 +66,9 @@ async function rewriteResume(req, res) {
         return res.end(pdfBuffer);
     } catch (error) {
         console.error("Resume rewrite error:", error);
+        if (error.status === 429) {
+            return res.status(429).json({ error: error.message });
+        }
         return res.status(500).json({ error: "Failed to rewrite resume." });
     }
 }
