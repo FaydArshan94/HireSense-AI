@@ -28,11 +28,23 @@ export function useRewriteResume() {
 
       toast.success("Resume rewritten and downloaded successfully!");
     },
-    onError: (error) => {
+    onError: async (error) => {
       console.error("Failed to rewrite resume:", error);
-      toast.error(
-        error.response?.data?.error || "Failed to rewrite resume. Please try again."
-      );
+      let errorMessage = "Failed to rewrite resume. Please try again.";
+      
+      if (error.response?.data instanceof Blob) {
+        try {
+          const text = await error.response.data.text();
+          const json = JSON.parse(text);
+          errorMessage = json.error || errorMessage;
+        } catch (e) {
+          // ignore parsing error
+        }
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
+      toast.error(errorMessage);
     },
   });
 }
