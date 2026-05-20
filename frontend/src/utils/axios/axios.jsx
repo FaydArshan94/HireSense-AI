@@ -2,7 +2,7 @@ import { useAuthStore } from "../../store/authStore";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "https://hiresense-ai-bcxp.onrender.com/api",
   withCredentials: true,
 });
 
