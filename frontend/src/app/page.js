@@ -1,13 +1,18 @@
 import HeroSection from "@/components/layout/HeroSection";
-import StatsSection from "@/components/layout/StatsSection";
+import HeroMockup from "@/components/layout/HeroMockup";
 import FeatureSection from "@/components/layout/FeatureSection";
+import CTASection from "@/components/layout/CtaSection";
+import TextReveal from "@/components/layout/Textreveal";
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <StatsSection />
+      <HeroMockup />
+      <TextReveal />
       <FeatureSection />
+      <CTASection />
+
     </>
   );
 }

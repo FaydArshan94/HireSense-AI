@@ -3,160 +3,141 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CheckCircle2 } from "lucide-react";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function FeatureSection() {
-    const sectionRef = useRef(null);
-    const imageRef = useRef(null);
+const features = [
+    {
+        tag: "ATS SCORE",
+        title: "Know exactly where you stand.",
+        description:
+            "Most people apply blind. HireSense gives you a real ATS match score against the specific job description — so you know if you're at 40% or 90% before you hit send.",
+        bullets: ["Instant match score 0–100%", "Score bar with visual feedback", "Compared against actual job requirements"],
+        screenshot: "/analyze.png",
+        screenshotAlt: "HireSense ATS score dashboard",
+        flip: false,
+    },
+    {
+        tag: "KEYWORD GAPS",
+        title: "See what the ATS is looking for.",
+        description:
+            "ATS systems scan for specific keywords. If they're missing, you're invisible — no matter how qualified you are. HireSense shows you exactly which ones are missing and which ones you have.",
+        bullets: ["Matched skills highlighted in green", "Missing keywords shown in red", "Prioritized by importance to the JD"],
+        screenshot: "/suggestions.png",
+        screenshotAlt: "HireSense keyword gap analysis",
+        flip: true,
+    },
+    {
+        tag: "RESUME REWRITE",
+        title: "Get a resume that actually gets through.",
+        description:
+            "Not just suggestions — a fully rewritten resume. HireSense rewrites your resume with the right keywords, stronger language, and clean formatting. Download it as a PDF, ready to apply.",
+        bullets: ["AI rewrites your actual resume", "Keywords added naturally — no stuffing", "Download as clean PDF instantly"],
+        screenshot: "/resume_rewrite.png",
+        screenshotAlt: "HireSense AI resume rewrite",
+        flip: false,
+    },
+];
+
+function FeatureCard({ feature, index }) {
+    const cardRef = useRef(null);
+    const imgRef = useRef(null);
     const contentRef = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from(imageRef.current, {
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top 70%",
-                },
-                x: -60,
+            gsap.from(imgRef.current, {
+                scrollTrigger: { trigger: cardRef.current, start: "top 72%" },
+                x: feature.flip ? 60 : -60,
                 opacity: 0,
                 duration: 1,
                 ease: "power3.out",
             });
-
             gsap.from(contentRef.current.children, {
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top 70%",
-                },
-                y: 40,
+                scrollTrigger: { trigger: cardRef.current, start: "top 72%" },
+                y: 32,
                 opacity: 0,
                 duration: 0.8,
-                stagger: 0.2,
+                stagger: 0.15,
                 ease: "power2.out",
             });
-        }, sectionRef);
-
+        }, cardRef);
         return () => ctx.revert();
-    }, []);
+    }, [feature.flip]);
 
     return (
-        <section ref={sectionRef} className="py-20 lg:py-32 bg-background">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                    {/* Left - Visual Mockup */}
-                    <div ref={imageRef} className="relative order-2 lg:order-1">
-                        <div className="relative bg-card border border-border rounded-2xl shadow-xl p-8 space-y-6">
-                            {/* Design Analysis Card */}
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-foreground">Design</h3>
-
-                                <div className="space-y-3">
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <div className="w-2 h-2 rounded-full bg-red-500" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-foreground">Resume template</p>
-                                            <p className="text-xs text-muted-foreground mt-1">
-                                                Using a resume template may struggle to process resumes with multiple columns or complex layouts.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-foreground">Font type</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-foreground">Skills section</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-foreground">Background</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Score Badge */}
-                            <div className="absolute -top-4 -right-4 bg-card border-2 border-border rounded-xl px-4 py-2 shadow-lg">
-                                <p className="text-2xl font-bold text-foreground">20/25</p>
-                            </div>
-
-                            {/* Mini Resume Preview */}
-                            <div className="absolute -bottom-6 -left-6 w-24 h-32 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-border overflow-hidden transform -rotate-6">
-                                <div className="p-2 space-y-1.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="w-6 h-6 bg-primary/20 rounded-full" />
-                                        <div className="space-y-0.5">
-                                            <div className="h-1.5 w-10 bg-muted rounded" />
-                                            <div className="h-1 w-12 bg-muted/60 rounded" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="h-1 w-full bg-muted rounded" />
-                                        <div className="h-1 w-full bg-muted rounded" />
-                                        <div className="h-1 w-2/3 bg-muted rounded" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div
+            ref={cardRef}
+            className={`py-20 px-6  border-[#ede9e0]`}
+        >
+            <div
+                className={`max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center`}
+                style={{ direction: feature.flip ? "rtl" : "ltr" }}
+            >
+                {/* Screenshot */}
+                <div ref={imgRef} style={{ direction: "ltr" }} className="flex justify-center">
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-[0_8px_40px_rgba(0,0,0,0.08),_0_2px_12px_rgba(0,0,0,0.04)] bg-white w-[85%] max-w-[450px]">
+                        <img
+                            src={feature.screenshot}
+                            alt={feature.screenshotAlt}
+                            className="w-full h-auto block"
+                        />
                     </div>
+                </div>
 
-                    {/* Right - Content */}
-                    <div ref={contentRef} className="space-y-8 order-1 lg:order-2">
-                        <div className="space-y-4">
-                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                                Applicant Tracking System Simulator
-                            </p>
-                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-                                No interviews? ATS scans might be at fault.
-                            </h2>
-                        </div>
+                {/* Content */}
+                <div ref={contentRef} style={{ direction: "ltr" }}>
+                    <span className="inline-block font-sans text-[10px] font-bold tracking-[0.1em] text-indigo-700 bg-indigo-700/5 border border-indigo-700/15 px-2.5 py-[3px] rounded-full mb-4">
+                        {feature.tag}
+                    </span>
 
-                        <p className="text-lg text-muted-foreground leading-relaxed">
-                            Applicant Tracking Systems (ATS) are computer programs that many
-                            employers use to automatically weed out unqualified candidates. ATSs
-                            are everywhere—they're used by 99% of Fortune 500 companies and even
-                            20% of smaller businesses. But ATSs aren't perfect. Even if you have
-                            the necessary skills and experience, they can discard your resume if
-                            it's not optimized.
-                        </p>
+                    <h2 className="font-serif text-[clamp(1.6rem,2.8vw,2.2rem)] font-black text-[#0f0f0f] tracking-[-0.03em] leading-[1.2] mb-4">
+                        {feature.title}
+                    </h2>
 
-                        <p className="text-lg text-muted-foreground leading-relaxed">
-                            Our ATS Resume Checker will help you optimize your resume for ATS and
-                            help you pass the initial scan.
-                        </p>
+                    <p className="font-serif text-base text-gray-500 leading-[1.75] mb-6">
+                        {feature.description}
+                    </p>
 
-                        <button className="group bg-primary text-primary-foreground px-8 py-4 rounded-lg font-medium text-base hover:bg-primary/90 transition-all hover:shadow-xl hover:scale-105">
-                            ATS-Check My Resume
-                        </button>
+                    <div className="flex flex-col gap-2.5">
+                        {feature.bullets.map((bullet) => (
+                            <div key={bullet} className="flex items-start gap-2.5">
+                                <CheckCircle2 size={16} className="text-indigo-700 mt-0.5 shrink-0" strokeWidth={2} />
+                                <span className="font-sans text-sm text-gray-700 leading-relaxed">
+                                    {bullet}
+                                </span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
+        </div>
+    );
+}
+
+export default function FeatureSection() {
+    return (
+        <section id="features bg-blue-300">
+            <div className="text-center pt-20 px-6 bg-white">
+                <span className="inline-block font-sans text-[11px] font-semibold tracking-[0.09em] text-indigo-700 bg-indigo-700/5 border border-indigo-700/15 px-3 py-1 rounded-full mb-4">
+                    FEATURES
+                </span>
+                <h2 className="font-serif text-[clamp(1.9rem,3.5vw,2.8rem)] font-black text-[#0f0f0f] tracking-[-0.03em] leading-[1.15] mb-3">
+                    Everything you need to
+                    <br />
+                    <span className="text-indigo-700 italic">get past the gatekeepers.</span>
+                </h2>
+                <p className="font-sans text-[0.95rem] text-gray-400 max-w-[480px] mx-auto">
+                    No fluff. Just the three things that actually matter when your resume hits an ATS.
+                </p>
+            </div>
+
+            {features.map((feature, i) => (
+                <FeatureCard key={feature.tag} feature={feature} index={i} />
+            ))}
         </section>
     );
 }

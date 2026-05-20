@@ -10,7 +10,7 @@ export default function LayoutProvider({ children }) {
             <main className="min-h-screen bg-background overflow-hidden">
                 {children}
             </main>
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }

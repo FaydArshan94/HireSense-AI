@@ -2,199 +2,222 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { Upload } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight, Upload } from "lucide-react";
 import Link from "next/link";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function HeroSection() {
   const heroRef = useRef(null);
+  const canvasRef = useRef(null);
+  const badgeRef = useRef(null);
   const headlineRef = useRef(null);
-  const subtextRef = useRef(null);
+  const subRef = useRef(null);
   const ctaRef = useRef(null);
-  const mockupRef = useRef(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const targetRef = useRef({ x: 0, y: 0 });
+  const animFrameRef = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    // ── Canvas cursor-reactive rings ──────────────────────────
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let width, height;
 
-      tl.from(headlineRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-      })
-        .from(
-          subtextRef.current,
-          {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-          },
-          "-=0.4",
-        )
-        .from(
-          ctaRef.current,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.6,
-          },
-          "-=0.4",
-        )
-        .from(
-          mockupRef.current,
-          {
-            x: 60,
-            opacity: 0,
-            duration: 1,
-          },
-          "-=0.8",
-        );
-    }, heroRef);
+    const rings = Array.from({ length: 5 }, (_, i) => ({
+      baseRadius: 120 + i * 90,
+      x: 0,
+      y: 0,
+      angle: (i * Math.PI * 2) / 5,
+      speed: 0.0003 + i * 0.0001,
+      opacity: 0.06 - i * 0.008,
+      particles: Array.from({ length: 3 + i }, (_, j) => ({
+        angle: (j * Math.PI * 2) / (3 + i),
+        size: 2.5 - i * 0.3,
+      })),
+    }));
 
-    return () => ctx.revert();
+    function resize() {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+      rings.forEach((r) => {
+        r.x = width / 2;
+        r.y = height / 2;
+      });
+      targetRef.current = { x: width / 2, y: height / 2 };
+      mouseRef.current = { x: width / 2, y: height / 2 };
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    function onMouseMove(e) {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    }
+    canvas.addEventListener("mousemove", onMouseMove);
+    heroRef.current?.addEventListener("mousemove", onMouseMove);
+
+    let time = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      time += 1;
+
+      // Smoothly lerp target toward mouse — this creates the wave lag
+      targetRef.current.x += (mouseRef.current.x - targetRef.current.x) * 0.045;
+      targetRef.current.y += (mouseRef.current.y - targetRef.current.y) * 0.045;
+
+      rings.forEach((ring, i) => {
+        // Each ring follows target with different lag — creates wave effect
+        const lag = 0.02 + i * 0.015;
+        ring.x += (targetRef.current.x - ring.x) * lag;
+        ring.y += (targetRef.current.y - ring.y) * lag;
+        ring.angle += ring.speed;
+
+        // Draw ring
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.baseRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(67, 56, 202, ${ring.opacity})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Draw particles on ring
+        ring.particles.forEach((p) => {
+          p.angle += ring.speed * 1.5;
+          const px = ring.x + Math.cos(p.angle) * ring.baseRadius;
+          const py = ring.y + Math.sin(p.angle) * ring.baseRadius;
+
+          ctx.beginPath();
+          ctx.arc(px, py, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(99, 102, 241, ${ring.opacity * 3})`;
+          ctx.fill();
+        });
+      });
+
+      animFrameRef.current = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
+
+  // ── GSAP entry animations ─────────────────────────────────
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.from(badgeRef.current, { y: 20, opacity: 0, duration: 0.6 })
+      .from(headlineRef.current.children, { y: 48, opacity: 0, duration: 0.9, stagger: 0.12 }, "-=0.3")
+      .from(subRef.current, { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
+      .from(ctaRef.current.children, { y: 16, opacity: 0, duration: 0.6, stagger: 0.1 }, "-=0.4");
+  }, { scope: heroRef });
 
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center pt-20 lg:pt-0 bg-linear-to-b from-background to-muted/20"
+      className="h-screen bg-white flex flex-col items-center justify-center pt-20  px-2 relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <p
-                ref={headlineRef}
-                className="text-sm font-medium text-muted-foreground uppercase tracking-wide"
-              >
-                ATS Resume Checker
-              </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                Optimize your resume
-                <br />
-                <span className="text-primary">for ATS scanners.</span>
-              </h1>
-            </div>
+      {/* Canvas for cursor-reactive rings */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
 
-            <p
-              ref={subtextRef}
-              className="text-lg text-muted-foreground leading-relaxed max-w-xl"
-            >
-              Do you want to get invited to more job interviews? Simulate an
-              applicant tracking system scan with our ATS Resume Checker and
-              ensure that your resume always gets into the hands of a human
-              recruiter.
-            </p>
+      {/* Dot grid texture underneath rings */}
+      <div
+        className="absolute inset-0 opacity-40 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, #d4cfc6 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
 
-            <div
-              ref={ctaRef}
-              className="flex flex-col sm:flex-row gap-4 items-start"
-            >
-              <Link href="/dashboard">
-                <button className="group relative bg-primary text-primary-foreground px-8 py-4 rounded-lg font-medium text-base hover:bg-primary/90 transition-all hover:shadow-xl hover:scale-105 flex items-center gap-2">
-                  <Upload size={20} className="group-hover:animate-bounce" />
-                  Upload Your Resume
-                </button>
-              </Link>
-              <p className="text-xs text-muted-foreground flex items-center gap-2 pt-2">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-                Privacy guaranteed
-              </p>
-            </div>
-          </div>
+      {/* Content */}
+      <div className="relative max-w-[780px] w-full text-center z-10">
 
-          {/* Right Mockup */}
-          <div ref={mockupRef} className="relative">
-            <div className="relative bg-card border border-border rounded-2xl shadow-2xl p-8 space-y-6">
-              {/* Score Display */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    ATS Score
-                  </span>
-                  <div className="flex gap-2">
-                    <div className="w-8 h-8 bg-muted rounded-lg" />
-                    <div className="w-8 h-8 bg-muted rounded-lg" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-5xl font-bold text-foreground">
-                    85/100
-                  </div>
-                  <div className="h-3 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-linear-to-r from-red-500 via-yellow-500 to-green-500 rounded-full"
-                      style={{ width: "85%" }}
-                    />
-                  </div>
-                </div>
-              </div>
+        {/* Badge */}
+        {/* <div ref={badgeRef} className="mb-7">
+          <span
+            className="inline-flex items-center gap-[7px] text-[11px] font-semibold tracking-[0.09em] text-indigo-700 bg-indigo-700/5 border border-indigo-700/15 py-[5px] px-[14px] rounded-full font-sans"
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full bg-indigo-700 inline-block animate-[hsPulse_2s_infinite]"
+            />
+            AI-POWERED RESUME OPTIMIZER
+          </span>
+        </div> */}
 
-              {/* Metrics */}
-              <div className="space-y-3 pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Design</span>
-                  <span className="text-sm font-semibold text-foreground">
-                    20/25
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Structure
-                  </span>
-                  <span className="text-sm font-semibold text-foreground">
-                    40/50
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Content</span>
-                  <span className="text-sm font-semibold text-foreground">
-                    25/25
-                  </span>
-                </div>
-              </div>
-
-              {/* Resume Preview */}
-              <div className="absolute -top-6 -right-6 w-32 h-40 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-border overflow-hidden transform rotate-6">
-                <div className="p-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary/20 rounded-full" />
-                    <div className="space-y-1">
-                      <div className="h-2 w-12 bg-muted rounded" />
-                      <div className="h-1.5 w-16 bg-muted/60 rounded" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="h-1.5 w-full bg-muted rounded" />
-                    <div className="h-1.5 w-full bg-muted rounded" />
-                    <div className="h-1.5 w-3/4 bg-muted rounded" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Decorative Elements */}
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-accent/20 rounded-full blur-3xl" />
-            </div>
-          </div>
+        {/* Headline */}
+        <div ref={headlineRef} className="overflow-hidden mb-6">
+          <h1
+            className="font-serif text-[clamp(2.6rem,5.5vw,4rem)] font-black leading-[1.08] tracking-[-0.03em] text-[#0f0f0f] m-0"
+          >
+            Your resume is being rejected
+          </h1>
+          <h1
+            className="font-serif text-[clamp(2.6rem,5.5vw,4rem)] font-black leading-[1.08] tracking-[-0.03em] italic text-indigo-700 m-0"
+          >
+            before anyone reads it.
+          </h1>
         </div>
+
+        {/* Subtext */}
+        <p
+          ref={subRef}
+          className="font-serif text-[1.15rem] text-[#6b6b6b] leading-[1.75] max-w-[520px] mx-auto mb-9"
+        >
+          ATS systems filter out 75% of resumes automatically. HireSense tells
+          you exactly why — and rewrites your resume to get past them.
+        </p>
+
+        {/* CTAs */}
+        <div
+          ref={ctaRef}
+          className="flex gap-3 justify-center items-center mb-4 flex-wrap"
+        >
+          <Link href="/dashboard">
+            <button
+              className="flex items-center gap-2 bg-[#0f0f0f] text-white py-[13px] px-[26px] rounded-[10px] font-sans text-[0.9rem] font-semibold border-none cursor-pointer shadow-[0_4px_20px_rgba(15,15,15,0.2)] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(15,15,15,0.26)]"
+            >
+              <Upload size={16} />
+              Analyze my resume free
+              <ArrowRight size={15} />
+            </button>
+          </Link>
+
+          <Link href="#how-it-works">
+            <button
+              className="flex items-center gap-2 bg-transparent text-gray-700 py-[13px] px-[22px] rounded-[10px] font-sans text-[0.9rem] font-medium border-[1.5px] border-[#d4cfc6] cursor-pointer transition-colors duration-200 hover:border-gray-400 hover:bg-black/5"
+            >
+              See how it works
+            </button>
+          </Link>
+        </div>
+
+        {/* Trust line */}
+        <p
+          className="font-sans text-[0.78rem] text-gray-400 mb-14"
+        >
+          Free to start · No credit card required · Results in seconds
+        </p>
       </div>
 
-      {/* Decorative Background Elements */}
-      <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -z-10" />
+      <style>{`
+        @keyframes hsPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.35; }
+        }
+      `}</style>
     </section>
   );
 }

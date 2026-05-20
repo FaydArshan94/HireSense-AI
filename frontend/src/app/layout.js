@@ -29,7 +29,10 @@ export default function RootLayout({ children }) {
               (function() {
                 try {
                   var theme = localStorage.getItem('theme') || 'dark';
-                  document.documentElement.classList.add(theme);
+                  var isLandingPage = window.location.pathname === "/";
+                  if (theme === 'dark' && !isLandingPage) {
+                    document.documentElement.classList.add('dark');
+                  }
                 } catch (e) {}
               })();
             `,

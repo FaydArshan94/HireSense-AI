@@ -1,197 +1,116 @@
-import { Brain, Mail, Github, Linkedin, Twitter, Heart } from "lucide-react";
+'use client'
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
+const LiftoffHero = () => {
+  const massiveTextRef = useRef(null);
+
+  // --- GSAP ANIMATION ---
+  useEffect(() => {
+    // A dramatic bottom-up reveal for the main title
+    gsap.fromTo(
+      massiveTextRef.current,
+      {
+        opacity: 0,
+        y: 150,
+        scale: 0.9
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.8,
+        ease: 'power4.out',
+        delay: 0.3
+      }
+    );
+  }, []);
+
+  // --- FRAMER MOTION VARIANTS ---
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const fadeUpItem = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { ease: 'easeOut', duration: 0.5 } },
+  };
+
+  // Link Data
+  const column1 = ['Download', 'Product', 'Docs', 'Changelog', 'Press', 'Releases'];
+  const column2 = ['Blog', 'Pricing', 'Use Cases'];
 
   return (
-    <footer
-      className="mt-20"
-      style={{
-        background: 'var(--sidebar)',
-        color: 'var(--sidebar-foreground)',
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div
-                className="p-2 rounded-lg"
-                style={{
-                  background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-                }}
-              >
-                <Brain className="w-5 h-5 text-white" />
-              </div>
-              <span
-                className="text-xl font-bold "
-              
-              >
-                HireSense AI
-              </span>
-            </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-              AI-powered resume analysis platform helping job seekers match their skills with opportunities.
-            </p>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://x.com/ArshanFayd6142"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-all duration-300 hover:scale-110"
-                style={{ background: 'var(--input)' }}
-                aria-label="Twitter"
-              >
-                <Twitter className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
-              </a>
-              <a
-                href="https://github.com/FaydArshan94"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-all duration-300 hover:scale-110"
-                style={{ background: 'var(--input)' }}
-                aria-label="GitHub"
-              >
-                <Github className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/fayd-arshan-6716a6294/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-all duration-300 hover:scale-110"
-                style={{ background: 'var(--input)' }}
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
-              </a>
-            </div>
-          </div>
+    <div className=" bg-white text-zinc-900 flex flex-col justify-between p-8 md:p-16 lg:p-10  font-sans overflow-hidden">
 
-          {/* Product Links */}
-          <div>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--sidebar-foreground)' }}>Product</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#features" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#pricing" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a href="#how-it-works" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  How It Works
-                </a>
-              </li>
-              <li>
-                <a href="#testimonials" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Testimonials
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  FAQ
-                </a>
-              </li>
-            </ul>
-          </div>
+      {/* --- TOP SECTION --- */}
+      {/* <div className="flex flex-col md:flex-row justify-between w-full max-w-7xl mx-auto"> */}
 
-          {/* Company Links */}
-          <div>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--sidebar-foreground)' }}>Company</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#about" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="#blog" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#careers" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a href="#partners" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Partners
-                </a>
-              </li>
-            </ul>
-          </div>
+      {/* Left Heading */}
+      {/* <motion.h2
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="text-3xl md:text-4xl font-normal tracking-tight mb-12 md:mb-0"
+        >
+          Experience liftoff
+        </motion.h2> */}
 
-          {/* Support Links */}
-          <div>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--sidebar-foreground)' }}>Support</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#help" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#documentation" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  Documentation
-                </a>
-              </li>
-              <li>
-                <a href="#api" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  API Reference
-                </a>
-              </li>
-              <li>
-                <a href="#status" className="text-sm transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-                  System Status
-                </a>
-              </li>
-              <li>
-                <a href="mailto:support@hiresense.ai" className="text-sm transition-colors duration-200 flex items-center gap-1" style={{ color: 'var(--muted-foreground)' }}>
-                  <Mail className="w-3 h-3" />
-                  Contact Support
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+      {/* Right Navigation Links */}
+      {/* <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="flex gap-20 md:gap-32 md:pr-12"
+        >
 
-        {/* Divider */}
-        <div style={{ borderTop: '1px solid var(--sidebar-border)' }}></div>
+          <ul className="flex flex-col gap-3">
+            {column1.map((item, i) => (
+              <motion.li
+                key={i}
+                variants={fadeUpItem}
+                className="text-[15px] font-medium cursor-pointer hover:text-zinc-500 transition-colors"
+              >
+                {item}
+              </motion.li>
+            ))}
+          </ul>
 
-        {/* Bottom Bar */}
-        <div className="py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4 text-sm" style={{ color: 'var(--muted-foreground)' }}>
-            <p className="flex items-center gap-1">
-              © {currentYear} HireSense AI. Made with 
-              <Heart className="w-3 h-3 text-red-500 fill-red-500 inline-block mx-1" />
-              for job seekers
-            </p>
-          </div>
-          <div className="flex items-center gap-6 text-sm">
-            <a href="#privacy" className="transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-              Privacy Policy
-            </a>
-            <a href="#terms" className="transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-              Terms of Service
-            </a>
-            <a href="#cookies" className="transition-colors duration-200" style={{ color: 'var(--muted-foreground)' }}>
-              Cookies
-            </a>
-          </div>
-        </div>
+
+          <ul className="flex flex-col gap-3">
+            {column2.map((item, i) => (
+              <motion.li
+                key={i}
+                variants={fadeUpItem}
+                className="text-[15px] font-medium cursor-pointer hover:text-zinc-500 transition-colors"
+              >
+                {item}
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div> */}
+      {/* </div> */}
+
+      {/* --- BOTTOM SECTION --- */}
+      <div className="mt-auto  w-full flex justify-center items-end ">
+        <h1
+          ref={massiveTextRef}
+          // Using viewport width (vw) for the text size ensures it scales massively on all screens
+          className="text-[16vw] leading-none font-bold tracking-tighter text-zinc-900 origin-bottom"
+        >
+          HireSense AI
+        </h1>
       </div>
-    </footer>
+    </div>
   );
-}
+};
+
+export default LiftoffHero;

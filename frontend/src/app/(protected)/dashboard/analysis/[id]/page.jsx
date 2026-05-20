@@ -3,8 +3,9 @@
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RefreshCw, Calendar, Briefcase } from "lucide-react";
+import { ArrowLeft, RefreshCw, Calendar, Briefcase, Wand2 } from "lucide-react";
 import { useGetAnalysisById } from "@/features/analysis/useGetAnalysisById";
+import { useRewriteResume } from "@/features/analysis/useRewriteResume";
 import LoadingDots from "@/components/ui/LoadingDots";
 
 export default function AnalysisDetailPage() {
@@ -13,6 +14,7 @@ export default function AnalysisDetailPage() {
   const analysisId = params.id;
 
   const { data: analysis, isLoading, error } = useGetAnalysisById(analysisId);
+  const { mutate: rewriteResume, isPending: isRewriting } = useRewriteResume();
 
   if (isLoading) {
     return (
@@ -108,13 +110,28 @@ export default function AnalysisDetailPage() {
                   </div>
                 </div>
 
-                <Button
-                  onClick={() => router.push("/dashboard")}
-                  className="px-2 py-2  md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group  sm:w-auto"
-                >
-                  <RefreshCw className="mr-2 w-4 hidden sm:block h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
-                  <span className="">Re-analyze</span>
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    onClick={() => rewriteResume({ analysisId })}
+                    disabled={isRewriting}
+                    variant="outline"
+                    className="px-4 py-2 md:px-6 md:py-6 text-sm sm:text-base md:text-lg font-medium border-primary text-primary hover:bg-primary/10 transition-all hover:shadow-lg group"
+                  >
+                    {isRewriting ? (
+                      <RefreshCw className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 animate-spin" />
+                    ) : (
+                      <Wand2 className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-500" />
+                    )}
+                    <span>{isRewriting ? "Rewriting..." : "Rewrite Resume AI"}</span>
+                  </Button>
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    className="px-4 py-2 md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group"
+                  >
+                    <RefreshCw className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
+                    <span>Re-analyze</span>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -43,7 +43,6 @@ async function rewriteResume(req, res) {
             missingSkills,
             suggestions
         );
-        console.log("aiRawResponse", aiRawResponse);
 
         let rewrittenData;
         try {

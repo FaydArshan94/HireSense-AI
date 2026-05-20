@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const ThemeContext = createContext({
     theme: "light",
@@ -10,6 +11,7 @@ const ThemeContext = createContext({
 export function ThemeProvider({ children }) {
     const [theme, setTheme] = useState("light");
     const [mounted, setMounted] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
         setMounted(true);
@@ -17,23 +19,23 @@ export function ThemeProvider({ children }) {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme) {
             setTheme(savedTheme);
-            document.documentElement.classList.toggle("dark", savedTheme === "dark");
+            document.documentElement.classList.toggle("dark", savedTheme === "dark" && window.location.pathname !== "/");
         } else {
             // Check system preference
             const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
             const systemTheme = prefersDark ? "dark" : "light";
             setTheme(systemTheme);
-            document.documentElement.classList.toggle("dark", prefersDark);
+            document.documentElement.classList.toggle("dark", prefersDark && window.location.pathname !== "/");
         }
     }, []);
 
     useEffect(() => {
         if (!mounted) return;
 
-        const isDark = theme === "dark";
+        const isDark = theme === "dark" && pathname !== "/";
         document.documentElement.classList.toggle("dark", isDark);
         localStorage.setItem("theme", theme);
-    }, [theme, mounted]);
+    }, [theme, mounted, pathname]);
 
     const toggleTheme = () => {
         setTheme((prev) => (prev === "light" ? "dark" : "light"));
