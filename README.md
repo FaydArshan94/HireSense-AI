@@ -1,121 +1,293 @@
-# 🎯 HireSense AI
+<div align="center">
 
-> **Your AI-Powered Resume Optimization Tool**  
-> Stop getting auto-rejected. Make your resume ATS-proof and land more interviews.
+<br />
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge)](https://hire-sense-ai-theta.vercel.app/)
-[![MERN Stack](https://img.shields.io/badge/MERN-Stack-green?style=for-the-badge)]()
-[![Gemini AI](https://img.shields.io/badge/Powered%20by-Gemini%20AI-orange?style=for-the-badge)]()
+![HireSense AI](https://img.shields.io/badge/HireSense-AI-4338ca?style=for-the-badge&labelColor=0f0f0f)
 
+# HireSense AI
 
----
+### Your resume is being rejected before anyone reads it.
 
+ATS systems filter out 75% of resumes automatically. HireSense tells you exactly why — and rewrites your resume to get past them.
 
-## 🚨 Problem Statement
+<br />
 
-**75% of resumes never reach human eyes.**
+[![Live Demo](https://img.shields.io/badge/Live_Demo-hire--sense--ai--theta.vercel.app-0f0f0f?style=for-the-badge&logo=vercel&logoColor=white)](https://hire-sense-ai-theta.vercel.app/)
+[![Made with Gemini](https://img.shields.io/badge/Powered_by-Gemini_AI-4338ca?style=for-the-badge&logo=google&logoColor=white)]()
+[![MERN Stack](https://img.shields.io/badge/Stack-MERN-10b981?style=for-the-badge)]()
 
-Why? Because Applicant Tracking Systems (ATS) reject them before recruiters even see them.
+<br />
 
-Common reasons:
-- ❌ Poor formatting (tables, columns, graphics)
-- ❌ Missing industry keywords
-- ❌ Incompatible file structure
-- ❌ Wrong section headers
+![HireSense Dashboard](/image2.png)
 
-**Result:** Qualified candidates get auto-rejected, and job seekers waste hours wondering why they're getting ghosted.
+</div>
 
 ---
 
-## 💡 Solution
+## The Problem
 
-**HireSense AI** is an intelligent resume analyzer that:
+You apply to 50 jobs. You hear back from 2.
 
-✅ **Scans your resume** like a real ATS system  
-✅ **Compares it** against job descriptions  
-✅ **Identifies gaps** in keywords, formatting, and structure  
-✅ **Provides actionable recommendations** powered by Gemini AI  
-✅ **Gives you a match score** so you know where you stand
+It's not because you're unqualified. It's because **Applicant Tracking Systems (ATS)** reject your resume before a human ever sees it — automatically, silently, and for reasons you can't see.
+
+Missing keywords. Wrong formatting. Poor structure. That's all it takes.
 
 ---
 
-## ✨ Features
+## The Solution
 
-### 🎯 **Core Features**
-- **ATS Compatibility Check** - Analyze resume parsing success rate
-- **Keyword Optimization** - Identify missing keywords from job descriptions
-- **Match Score Analysis** - Get percentage match against target roles
-- **AI-Powered Suggestions** - Gemini AI recommendations for improvement
-- **Multi-Format Support** - Works with PDF, DOCX, and TXT files
-- **Resume Dashboard** - Track all your resume analyses in one place
+HireSense AI scans your resume the way an ATS does, shows you exactly what's wrong, and then **rewrites your resume** to fix it — not just tells you to.
 
-### 🎨 **User Experience**
-- **Smooth Animations** - GSAP + Lenis for buttery-smooth scrolling
-- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
-- **Real-time Analysis** - Instant feedback on resume uploads
-- **Interactive UI** - Color-coded scores and visual progress bars
+```
+Upload Resume + Job Description
+         ↓
+   AI Analyzes (ATS Score + Keyword Gaps + Issues)
+         ↓
+   One Click → Fully Rewritten Resume
+         ↓
+   Download PDF — Ready to Apply
+```
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-### **Frontend**
-- **NextJs** - UI library
-- **Zustand** - Lightweight state management
-- **TanStack Query (React Query)** - Server state management & caching
-- **Axios** - HTTP client for API requests
-- **GSAP** - Professional-grade animations
-- **Lenis** - Smooth scroll library
-- **Tailwind CSS** - Utility-first styling
-
-### **Backend**
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB object modeling
-- **Multer** - File upload middleware
-- **pdf-parse** - PDF text extraction
-- **Gemini AI API** - AI-powered resume analysis
-
-### **DevOps & Tools**
-- **Vercel** - Frontend hosting
-- **Render** - Backend deploy
-- **MongoDB Atlas** - Cloud database
-- **Git** - Version control
+| Feature | What it does |
+|---|---|
+| 🎯 **ATS Match Score** | Instant 0–100% score against any job description |
+| 🔍 **Keyword Analysis** | Shows exactly which keywords are missing and which matched |
+| 💡 **AI Recommendations** | Actionable suggestions powered by Gemini AI |
+| ✍️ **Resume Rewrite** | Full AI rewrite — not just suggestions, a ready-to-use resume |
+| 📄 **PDF Export** | Download your optimized resume as a clean, professional PDF |
+| 📊 **Analysis History** | Track all your analyses in one dashboard |
+| 🔐 **Secure Auth** | JWT-based authentication with cookie sessions |
+| ⚡ **Rate Limiting** | Daily analysis limits to ensure fair usage |
 
 ---
 
-## 🎥 Demo
+## Tech Stack
 
-### **Live Application**
-🔗 [https://hire-sense-ai.theta.vercel.app](https://hire-sense-ai.theta.vercel.app)
+### Frontend
+```
+Next.js          — React framework with App Router
+Zustand          — Lightweight global state management
+TanStack Query   — Server state, caching, and sync
+Axios            — HTTP client
+GSAP             — Professional animations + ScrollTrigger
+Lenis            — Smooth scroll
+Tailwind CSS     — Utility-first styling
+```
 
-### **Screenshots**
+### Backend
+```
+Node.js          — Runtime
+Express.js       — Web framework
+MongoDB          — NoSQL database
+Mongoose         — ODM for MongoDB
+Multer           — File upload handling
+pdf-parse        — PDF text extraction
+Puppeteer        — PDF generation for optimized resumes
+Gemini AI API    — Resume analysis + rewriting
+```
 
-| ATS Score Dashboard | Resume Analysis | Keyword Recommendations |
-|:---:|:---:|:---:|
-| ![Home](/Home.jpeg) | ![Analysis](/Dashboard.jpeg) | ![Keywords](/Analytics.jpeg) |
+### Infrastructure
+```
+Vercel           — Frontend deployment
+Render           — Backend deployment
+MongoDB Atlas    — Cloud database
+```
 
 ---
 
-## 💻 Usage
+## Getting Started
 
-### **Basic Workflow**
+### Prerequisites
 
-1. **Upload Resume** - Drop your PDF/DOCX resume
-2. **Add Job Description** - Paste the target job description
-3. **Analyze** - AI analyzes compatibility
-4. **Get Results** - View ATS score, keyword gaps, and recommendations
-5. **Optimize** - Apply suggestions and re-upload
+- Node.js 18+
+- MongoDB (local or Atlas)
+- Gemini API key from [Google AI Studio](https://aistudio.google.com/)
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/FaydArshan94/hiresense-ai.git
+cd hiresense-ai
+```
+
+### 2. Backend setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
+NODE_ENV=development
+```
+
+```bash
+npm run dev
+```
+
+### 3. Frontend setup
+
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ⭐ Show Your Support
+## How It Works
 
-If HireSense AI helped you land an interview, give it a ⭐️!
+### Resume Analysis Flow
 
-**Found a bug?** (arshanw94@gmail.com)  
+```
+1. User uploads PDF resume
+       ↓
+2. pdf-parse extracts raw text
+       ↓
+3. User pastes job description
+       ↓
+4. Gemini AI compares resume vs JD:
+   - Calculates match score (0-100%)
+   - Identifies matched keywords
+   - Finds missing keywords
+   - Generates actionable suggestions
+       ↓
+5. Results saved to MongoDB
+       ↓
+6. User sees score, gaps, recommendations
+```
 
+### Resume Rewrite Flow
+
+```
+1. User clicks "Rewrite Resume AI"
+       ↓
+2. Backend fetches existing analysis + raw resume text
+       ↓
+3. Gemini AI rewrites resume:
+   - Adds missing keywords naturally
+   - Strengthens bullet points
+   - Keeps real experience intact
+   - No fabrication
+       ↓
+4. Puppeteer generates clean PDF
+       ↓
+5. User downloads optimized resume
+```
+
+---
+
+## Project Structure
+
+```
+hiresense-ai/
+├── frontend/
+│   └── src/
+│       ├── app/              # Next.js App Router pages
+│       ├── components/
+│       │   ├── layout/       # Navbar, Footer, Hero, sections
+│       │   └── ui/           # Reusable UI components
+│       └── store/            # Zustand stores
+│
+└── backend/
+    └── src/
+        ├── ai/
+        │   ├── prompts/      # Gemini prompt builders
+        │   ├── services/     # AI + PDF generation services
+        │   └── contracts/    # Response schema validation
+        ├── controllers/      # Route handlers
+        ├── models/           # Mongoose schemas
+        ├── middlewares/      # Auth, error handling
+        └── routes/           # Express routes
+```
+
+---
+
+## API Reference
+
+### Auth
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login |
+| GET | `/api/auth/me` | Get current user |
+
+### Resume
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/resume/upload` | Upload PDF resume |
+
+### Job Description
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/jd/upload` | Upload job description |
+
+### AI Analysis
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/ai/analyze-resume` | Run ATS analysis |
+| POST | `/api/ai/rewrite-resume` | Rewrite + download PDF |
+| GET | `/api/ai/history` | Get analysis history |
+| GET | `/api/ai/usage` | Get daily usage |
+| GET | `/api/ai/:id` | Get analysis by ID |
+
+---
+
+## Roadmap
+
+- [x] ATS score analysis
+- [x] Keyword gap detection
+- [x] AI-powered resume rewrite
+- [x] PDF export
+- [x] Analysis history dashboard
+- [ ] Cover letter generator
+- [ ] LinkedIn profile optimizer
+- [ ] Interview preparation tips based on gaps
+- [ ] Team/recruiter dashboard
+- [ ] Chrome extension
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue first to discuss what you'd like to change.
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## Contact
+
+**Fayd Arshan**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-fayd--arshan-0077b5?style=flat&logo=linkedin)](https://www.linkedin.com/in/fayd-arshan-6716a6294/)
+[![X](https://img.shields.io/badge/X-@ArshanFayd6142-1da1f2?style=flat&logo=x)](https://x.com/ArshanFayd6142)
+[![Email](https://img.shields.io/badge/Email-arshanw94@gmail.com-ea4335?style=flat&logo=gmail)](mailto:arshanw94@gmail.com)
 
 ---
 
@@ -124,5 +296,7 @@ If HireSense AI helped you land an interview, give it a ⭐️!
 **Built with ❤️ by Fayd Arshan**
 
 *Making job hunting fair, one resume at a time.*
+
+[![Star this repo](https://img.shields.io/github/stars/FaydArshan94/hiresense-ai?style=social)](https://github.com/FaydArshan94/hiresense-ai)
 
 </div>
