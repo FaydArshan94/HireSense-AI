@@ -30,7 +30,7 @@ const BackgroundLines = () => {
                 viewBox="0 0 1200 600"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="absolute w-full h-full min-w-[1200px]"
+                className="absolute w-[800px] h-[400px] md:w-full md:h-full md:min-w-[1200px] opacity-60 md:opacity-100"
                 preserveAspectRatio="xMidYMid slice"
             >
                 <defs>

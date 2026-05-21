@@ -86,7 +86,7 @@ export default function AnalysisDetailPage() {
 
           <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl overflow-clip">
             <CardContent className="p-6 space-y-4">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Briefcase className="w-4 h-4" />
@@ -110,12 +110,12 @@ export default function AnalysisDetailPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                   <Button
                     onClick={() => rewriteResume({ analysisId })}
                     disabled={isRewriting}
                     variant="outline"
-                    className="px-4 py-2 md:px-6 md:py-6 text-sm sm:text-base md:text-lg font-medium border-primary text-primary hover:bg-primary/10 transition-all hover:shadow-lg group"
+                    className="flex-1 lg:flex-none px-4 py-2 md:px-6 md:py-6 text-sm sm:text-base md:text-lg font-medium border-primary text-primary hover:bg-primary/10 transition-all hover:shadow-lg group"
                   >
                     {isRewriting ? (
                       <RefreshCw className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 animate-spin" />
@@ -126,7 +126,7 @@ export default function AnalysisDetailPage() {
                   </Button>
                   <Button
                     onClick={() => router.push("/dashboard")}
-                    className="px-4 py-2 md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group"
+                    className="flex-1 lg:flex-none px-4 py-2 md:px-8 md:py-6 text-sm sm:text-base md:text-lg font-medium bg-primary hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 group"
                   >
                     <RefreshCw className="mr-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
                     <span>Re-analyze</span>

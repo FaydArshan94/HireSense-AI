@@ -165,7 +165,7 @@ export default function HeroSection() {
             Your resume is being rejected
           </h1>
           <h1
-            className="font-serif text-[clamp(2.6rem,5.5vw,4rem)] font-black leading-[1.08] tracking-[-0.03em] italic text-indigo-700 m-0"
+            className="font-serif text-[clamp(2.6rem,5.5vw,4rem)] font-black leading-[1.2] tracking-[-0.03em] italic text-indigo-700 m-0"
           >
             before anyone reads it.
           </h1>
